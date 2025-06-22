@@ -1,0 +1,63 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100%;
+}
+
+#root {
+    height: 100%;
+    width: 100%;
+}
+
+.app-container {
+    display: grid;
+    grid-template-areas:
+        "header header header header"
+        "sidebar main main main"
+        "footer footer footer footer";
+    grid-template-columns: minmax(8%, 9%) 1fr;
+    grid-template-rows: 5% 1fr 5%;
+    width: 100%;
+    height: 100%;
+}
+
+.navbar-area {
+    grid-area: header;
+}
+
+.sidebar-area {
+    grid-area: sidebar;
+}
+
+.main-area {
+    grid-area: main;
+}
+
+.footer-area {
+    grid-area: footer;
+}
+
+.full-width-main-area {
+    grid-column: 1 / span 2;
+    grid-row: 2;
+}
+
+.p-button-label {
+    color: white;
+}
+
+.p-button-icon {
+    color: white;
+}
+
+.p-card {
+    background-color: whitesmoke;
+}
+
+.error-message {
+    color: tomato;
+    align-self: start;
+    justify-self: start;
+    text-align: start;
+}

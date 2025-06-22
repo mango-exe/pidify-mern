@@ -1,0 +1,134 @@
+.files-list-container {
+    padding-top: 0.2em;
+}
+
+.files-list-container .files-list-content {
+    width: 90%;
+    height: 99%;
+    margin-left: 5%;
+    margin-right: 5%;
+    background-color: whitesmoke;
+    border-radius: 12px;
+    padding-top: 1em;
+}
+
+.files-list-container .files-list-content .p-card-body {
+    padding: 0;
+}
+
+.files-list-container .files-list-content .p-card-body .p-card-content {
+    padding: 0;
+}
+
+.files-list-container .files-list-content .header {
+    text-align: center;
+    margin-top: 1em;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.files-list-container .files-list-content .files-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 83vh;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+}
+
+.files-list-container .files-list-content .files-list::-webkit-scrollbar {
+  width: 15px;
+}
+
+.files-list-container .files-list-content .files-list::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.files-list-container .files-list-content .files-list::-webkit-scrollbar-button {
+  display: none !important;
+}
+
+.files-list-container .files-list-content .files-list {
+  scrollbar-width: none;
+  scrollbar-color: white transparent;
+}
+
+.files-list-container .files-list-content .files-list .file-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    height: 10vh;
+    min-height: 10vh;
+    text-align: center;
+    margin: 1em;
+    font-weight: bold;
+    font-size: 0.7em;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    padding: 0 0.5em;
+    overflow: hidden;
+}
+
+.files-list-container .files-list-content .files-list .file-item .file-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    padding: 0 0.5em;
+}
+
+/* Background colors by status */
+.file-fulfilled {
+    background-color: #8b5cf6;
+    color: white;
+}
+
+.file-pending {
+    background-color: #ffe58f;
+    color: #7c6f00;
+}
+
+.file-in_progress {
+    background-color: #91d5ff;
+    color: #004f6b;
+}
+
+.file-failed {
+    background-color: #ffccc7;
+    color: #a8071a;
+}
+
+.file-item:hover {
+    transform: scale(1.1);
+}
+
+/* Spinner animation */
+.file-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6em;
+    margin-top: 0.5em;
+}
+
+.file-spinner {
+    width: 25px;
+    height: 25px;
+    border: 2px solid white;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-top: 0.3em;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

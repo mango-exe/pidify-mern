@@ -1,0 +1,16 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container .p-card {
+    width: 30em;
+    height: 10em;
+}
+
+.login-container .p-card .p-card-content {
+    display: flex;
+    align-items: center;
+    justify-self: center;
+}

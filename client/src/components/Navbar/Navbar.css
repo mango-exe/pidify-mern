@@ -1,0 +1,28 @@
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #8b5cf6;
+  color: #fff;
+}
+
+.navbar-container span {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.navbar-container .logout-container {
+  display: flex;
+  justify-content: center;
+  column-gap: 1em;
+
+}
+
+.navbar-container .logout-container span {
+  font-size: 0.8em;
+}
+
+.navbar-container .logout-container i {
+  cursor: pointer;
+}

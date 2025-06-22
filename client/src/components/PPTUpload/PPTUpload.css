@@ -1,0 +1,82 @@
+.file-upload-container {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+
+.file-upload-container .file-upload-content  {
+    height: 98%;
+    width: 99%;
+    border-radius: 12px ;
+}
+
+.file-upload-container .file-upload-content .file-upload  {
+    width: 90%;
+}
+
+.file-upload-container .file-upload-content .file-upload .p-fileupload-content   {
+  height: 11em;
+}
+
+.file-upload-container .file-upload-content .file-upload .file-upload-empty-template   {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    row-gap: 1em;
+}
+
+.file-upload-container .file-upload-content  .p-card-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+
+.file-upload-container .file-upload-content  .p-card-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    row-gap: 6em;
+    height: 100%;
+    width: 100%;
+}
+
+
+.file-upload-container .file-upload-content .file-details-container  {
+    display: flex;
+    align-items: center;
+    row-gap: unset;
+    justify-self: center ;
+    width: 50em
+}
+
+.file-upload-container .file-upload-content .file-details-container .p-card-content  {
+    row-gap: unset !important;
+}
+
+.file-upload-container .file-upload-content .file-details-container .p-card-title  {
+    align-self: start;
+}
+
+
+.file-upload-container .file-upload-content .file-details-container .input  {
+    width: 100%;
+    margin: 0.5em;
+}
+
+.file-upload-container .file-upload-content .upload-button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.file-upload-container .file-upload-content .upload-button-container .p-button {
+    width: 30%;
+}
