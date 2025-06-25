@@ -1,3 +1,60 @@
-.content-editor-container {
-   background-color: green;
+.content-editor-container .content-editor-content {
+    position: relative;
+    height: 99%;
+    width: 99%;
+    border-radius: 12px;
+}
+
+.content-editor-container .content-editor-content .p-card-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.content-editor-container .content-editor-content .file-content-container {
+    height: 70vh;
+}
+
+.content-editor-container .content-editor-content #page-container {
+  position: relative;
+  overflow-x: hidden;
+  height: 85vh;
+  padding: 1em;
+  scrollbar-width: thin;
+  scrollbar-color: #8b5cf6 transparent;
+}
+
+.content-editor-container .content-editor-content #page-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.content-editor-container .content-editor-content #page-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content-editor-container .content-editor-content #page-container::-webkit-scrollbar-thumb {
+  background-color: white;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.content-editor-container .content-editor-content .text-container {
+  transition: box-shadow 0.3s ease;
+}
+
+.content-editor-container .content-editor-content .text-container:hover {
+  outline: 6px dashed;
+  outline-offset: 10px;
+  outline-color: #8b5cf6;
+  cursor: pointer;
+}
+
+.content-editor-container .content-editor-content .editing  {
+  outline: 6px dashed;
+  outline-offset: 10px;
+  outline-color: red;
+  cursor: pointer;
 }

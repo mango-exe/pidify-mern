@@ -7,6 +7,7 @@ enum  Rights {
 }
 
 interface IPermission extends Document {
+  _id: mongoose.Types.ObjectId;
   forResource: mongoose.Types.ObjectId;
   rights: Rights;
 }

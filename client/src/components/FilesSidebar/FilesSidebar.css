@@ -10,6 +10,7 @@
     background-color: whitesmoke;
     border-radius: 12px;
     padding-top: 1em;
+    overflow-y: hidden;
 }
 
 .files-list-container .files-list-content .p-card-body {
@@ -23,6 +24,7 @@
 .files-list-container .files-list-content .header {
     text-align: center;
     margin-top: 1em;
+    margin-bottom: 0.5em;
     font-weight: bold;
     font-size: 1.2em;
 }

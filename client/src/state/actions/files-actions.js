@@ -17,6 +17,36 @@ export const getPDFFiles = createAsyncThunk(
   }
 )
 
+export const getPDFFileById = createAsyncThunk(
+  'pdf/getPDFFileById',
+  async (alias, thunkAPI) => {
+    try {
+      const { auth } = thunkAPI.getState()
+      const response = await axios.get(`${SERVER}/file-api/file-metas/${alias}`, {
+        headers: { Authorization: `${auth.user.token}` }
+      })
+      return response.data
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message)
+    }
+  }
+)
+
+export const getPDFFileContent = createAsyncThunk(
+  'pdf/getPDFFileContent',
+  async (alias, thunkAPI) => {
+    try {
+      const { auth } = thunkAPI.getState()
+      const response = await axios.get(`${SERVER}/file-api/file-metas/${alias}/content`, {
+        headers: { Authorization: `${auth.user.token}` }
+      })
+      return response.data
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message)
+    }
+  }
+)
+
 export const uploadPDFFile = createAsyncThunk(
   'pdf/uploadPDFFile',
   async (fileFormData, thunkAPI) => {

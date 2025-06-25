@@ -1,16 +1,22 @@
 import { Response, NextFunction } from 'express'
-
 import { IResponse } from '../../types/response/response'
 import { IFileUploadRequest } from '../../types/request/IFileUploadRequest'
-
-import { FileMeta } from '../../models/filemeta'
-import { v4 as uuidv4 } from 'uuid'
+import { IGetFileRequest } from '../../types/request/IGetFileRequest'
 import { JobStatus } from '../../types/models/filemeta'
-import { saveFile } from '../../lib/file-lib'
-import { UploadedFile } from 'express-fileupload'
-import { ProcessingQueue } from '../../lib/queue-lib'
+import { FileMeta } from '../../models/filemeta'
 import { IPermission, Rights } from '../../types/models/permission'
+import { UploadedFile } from 'express-fileupload'
+import { Types } from 'mongoose'
+
+import { ProcessingQueue } from '../../lib/queue-lib'
+
+import fsPromise from 'fs/promises'
+import path from 'path'
+
 import { models } from '../../models'
+import { v4 as uuidv4 } from 'uuid'
+import { saveFile } from '../../lib/file-lib'
+import { prev } from 'cheerio/dist/commonjs/api/traversing'
 
 const getPDFFileMetas = async (req: Request, res: Response<IResponse>, next: NextFunction) => {
   try {
@@ -26,6 +32,68 @@ const getPDFFileMetas = async (req: Request, res: Response<IResponse>, next: Nex
     const count = await models.FileMeta.countDocuments({ _id: { $in: fileMetaIds } })
 
     return res.status(200).json({ message: 'OK', data: { files: fileMetas, count }, timestamp: new Date() })
+  } catch(e) {
+    next(e)
+  }
+}
+
+const getPDFFileMetaById = async (req: IGetFileRequest, res: Response<IResponse>, next: NextFunction) => {
+  try {
+    const alias = req.params.alias
+
+    if (!alias) {
+      res.status(400).json({ message: 'Missing  file alias', data: null, timestamp: new Date() })
+      return
+    }
+
+    const fileMeta = await models.FileMeta.findOne({ alias })
+
+    if (!fileMeta) {
+      res.status(404).json({ message: 'File not found', data: null, timestamp: new Date() })
+      return
+    }
+
+    const permissionsIds: Types.ObjectId[]  = res.locals.user.permissions.map((e: IPermission)  => e.forResource)
+
+    if (!permissionsIds.find(e => e.equals(fileMeta._id))) {
+      res.status(401).json({ message: 'Unauthorized', data: null, timestamp: new Date() })
+      return
+    }
+
+    return res.status(200).json({ message: 'OK', data: fileMeta, timestamp: new Date() })
+  } catch(e) {
+    next(e)
+  }
+}
+
+const getFileMetaContent = async (req: IGetFileRequest, res: Response, next: NextFunction) => {
+  try {
+    const alias = req.params.alias
+
+    if (!alias) {
+      res.status(400).json({ message: 'Missing  file alias', data: null, timestamp: new Date() })
+      return
+    }
+
+    const fileMeta = await models.FileMeta.findOne({ alias })
+
+    if (!fileMeta) {
+      res.status(404).json({ message: 'File not found', data: null, timestamp: new Date() })
+      return
+    }
+
+    const permissionsIds: Types.ObjectId[]  = res.locals.user.permissions.map((e: IPermission)  => e.forResource)
+
+    if (!permissionsIds.find(e => e.equals(fileMeta._id))) {
+      res.status(401).json({ message: 'Unauthorized', data: null, timestamp: new Date() })
+      return
+    }
+
+    const fileMetaContentPath = path.join(fileMeta.path, `${fileMeta.alias}.html`)
+
+    const fileMetaContent = await fsPromise.readFile(fileMetaContentPath)
+
+    res.send(fileMetaContent)
   } catch(e) {
     next(e)
   }
@@ -79,8 +147,8 @@ const postOwnedPDF = async (req: IFileUploadRequest, res: Response<IResponse>, n
 
     user.permissions.push(permission._id)
 
-    const filePath: string = await saveFile(alias, '.pdf', 'import', file.data)
-    fileMeta.path = filePath
+    const fileBaseDir: string = await saveFile(alias, '.pdf', 'import', file.data)
+    fileMeta.path = fileBaseDir
 
 
     await user.save()
@@ -102,5 +170,7 @@ const postOwnedPDF = async (req: IFileUploadRequest, res: Response<IResponse>, n
 
 export {
   postOwnedPDF,
-  getPDFFileMetas
+  getPDFFileMetas,
+  getFileMetaContent,
+  getPDFFileMetaById
 }

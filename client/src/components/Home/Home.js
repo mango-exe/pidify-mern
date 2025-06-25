@@ -1,15 +1,13 @@
 import './Home.css'
 import React from 'react'
-import ContentEditor from '../ContentEditor/ContentEditor'
 import FilesSidebar from '../FilesSidebar/FilesSidebar'
-import PPTUpload from '../PPTUpload/PPTUpload'
+import { Outlet } from 'react-router'
 
 const Home = () => {
   return (
     <>
       <FilesSidebar />
-      <PPTUpload />
-      {/* <ContentEditor /> */}
+      <Outlet />
     </>
   )
 }

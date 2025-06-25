@@ -2,7 +2,6 @@ import { models } from '../models'
 import moment from 'moment'
 import { Request, Response, NextFunction } from 'express'
 import { IResponse } from '../types/response/response'
-import { User } from '../models/user'
 
 const auth = async (req: Request, res: Response<IResponse>, next: NextFunction) => {
   try {

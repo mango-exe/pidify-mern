@@ -6,6 +6,7 @@ import { initApp } from './app'
 import { ProcessingQueue } from './lib/queue-lib'
 import { buildDockerFile } from './lib/docker-lib'
 import { WSWrapper } from './lib/ws-lib'
+// import { preprocessHTMLFile } from './lib/html-lib'
 
 
 
@@ -51,5 +52,7 @@ const runServer = async () => {
     console.warn(e)
   }
 }
+// const filePath = path.join(process.cwd(), 'src', 'files', 'import', 'a270cb14-00a9-4865-8840-19820609da0a', 'a270cb14-00a9-4865-8840-19820609da0a.html')
+// preprocessHTMLFile(filePath)
 
 runServer()

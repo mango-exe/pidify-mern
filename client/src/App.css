@@ -28,10 +28,12 @@ body {
 
 .sidebar-area {
     grid-area: sidebar;
+    height: 90vh;
 }
 
 .main-area {
     grid-area: main;
+    height: 90vh;
 }
 
 .footer-area {
@@ -49,6 +51,9 @@ body {
 
 .p-button-icon {
     color: white;
+}
+.pi {
+    display: unset !important;
 }
 
 .p-card {

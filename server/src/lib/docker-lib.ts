@@ -40,7 +40,10 @@ const buildDockerFile = async (): Promise<void> => {
 
 const runDockerPDFtoHTMLService = async (fileAlias: string): Promise<void> => {
   const fileBasedir = path.join(process.cwd(), 'src', 'files', 'import', fileAlias)
-  await execAsync(`docker run --rm -v ${fileBasedir}:/pdf -w /pdf service-pdf2htmlex ${fileAlias}.pdf`)
+  const uid = process.getuid?.() || 1000
+  const gid = process.getgid?.() || 1000
+
+  await execAsync(`docker run --rm -u ${uid}:${gid} -v ${fileBasedir}:/pdf -w /pdf service-pdf2htmlex ${fileAlias}.pdf --zoom 1.3`)
 }
 
 export {

@@ -3,6 +3,7 @@ import IORedis, { Redis } from 'ioredis'
 import { models } from '../models'
 import { JobStatus } from '../types/models/filemeta'
 import { runDockerPDFtoHTMLService } from './docker-lib'
+import { preprocessHTMLFile } from './html-lib'
 import { WSWrapper } from './ws-lib'
 import path from 'path'
 import { setTimeout } from 'node:timers'
@@ -100,32 +101,32 @@ class ProcessingQueue {
   }
 
   private async PDFWorkerProcessor(job: Job<{ fileAlias: string, user: IUser }>): Promise<void> {
-    const { fileAlias } = job.data;
-    console.warn(`Processing job for ${fileAlias}`);
+    const { fileAlias } = job.data
+    console.warn(`Processing job for ${fileAlias}`)
 
-    const fileMeta = await models.FileMeta.findOne({ alias: fileAlias });
+    const fileMeta = await models.FileMeta.findOne({ alias: fileAlias })
     if (!fileMeta) {
-      throw new Error(`FileMeta not found for ${fileAlias}`);
+      throw new Error(`FileMeta not found for ${fileAlias}`)
     }
 
-    fileMeta.jobStatus = JobStatus.IN_PROGRESS;
-    await fileMeta.save();
+    fileMeta.jobStatus = JobStatus.IN_PROGRESS
+    await fileMeta.save()
 
     try {
-      // Simulate a failure
-      throw new Error("Simulated processing failure");
-
-      // This would normally run if there was no error
-      await runDockerPDFtoHTMLService(fileAlias);
+      await runDockerPDFtoHTMLService(fileAlias)
     } catch (e: any) {
-      console.error(`Error during processing: ${e.message}`);
-      throw new Error(`Job failed for ${fileAlias}: ${e.toString()}`);
+      console.error(`Error during processing: ${e.message}`)
+      throw new Error(`Job failed for ${fileAlias}: ${e.toString()}`)
     }
 
-    fileMeta.jobStatus = JobStatus.FULFILLED;
-    await fileMeta.save();
 
-    console.warn(`Job finished for ${job.data.fileAlias}`);
+    const filePath = path.join(fileMeta.path, `${fileMeta.alias}.html`)
+    await preprocessHTMLFile(filePath)
+
+    fileMeta.jobStatus = JobStatus.FULFILLED
+    await fileMeta.save()
+
+    console.warn(`Job finished for ${job.data.fileAlias}`)
   }
 }
 

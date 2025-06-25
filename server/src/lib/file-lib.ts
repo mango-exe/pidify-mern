@@ -16,7 +16,7 @@ const saveFile = async (fileAlias: string, fileType: FileType, type: Directon = 
 
   await fsPromises.writeFile(filePath, file)
 
-  return filePath
+  return fileDir
 }
 
 const removeFile = async (fileAlias: string, fileType: FileType, type: Directon = 'import'): Promise<boolean> => {
