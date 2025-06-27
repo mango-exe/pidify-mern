@@ -20,7 +20,6 @@ const userSlice = createSlice({
       state.fetching = true
     })
     builder.addCase(getUser.fulfilled, (state, action) => {
-      console.warn(action.payload)
       state.user = action.payload.data
       state.isAuthenticated = true
       state.fetched = true

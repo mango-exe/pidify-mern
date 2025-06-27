@@ -30,6 +30,8 @@ const preprocessHTMLFile = async (filePath: string) => {
           const childCurrentClass: string = $(childElement).attr('class') || ''
           $(childElement).attr('id', childId)
           $(childElement).attr('class', `${childCurrentClass} text-container`)
+          $(childElement).attr('element-supports', 'editing');
+
         })
       }
 
@@ -37,6 +39,7 @@ const preprocessHTMLFile = async (filePath: string) => {
       $(textElement).attr('id', elementId);
       const elementCurrentClass: string = $(textElement).attr('class') || ''
       $(textElement).attr('class', `${elementCurrentClass} text-container`)
+      $(textElement).attr('element-supports', 'editing');
     }
 
     const preprocessedHTML = $.html()

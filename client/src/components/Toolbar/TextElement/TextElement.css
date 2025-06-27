@@ -1,0 +1,59 @@
+.text-element-container {
+  border: 1px dashed #999;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.text-element-container .text-element-content {
+  width: 100%;
+  height: 100%;
+  fontSize: 16px;
+  position: relative;
+}
+
+.text-element-container .text-element-content .buttons-container {
+  position: absolute;
+  top: -16px;
+  right: 10px;
+  display: flex;
+  gap: 4px;
+}
+
+.text-element-container .text-element-content .buttons-container button {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.text-element-container .text-element-content .buttons-container button:hover {
+  background-color: #f0f0f0;
+  border-color: #999;
+}
+
+.text-element-container .text-element-content .buttons-container button:active {
+  background-color: #e0e0e0;
+  transform: scale(0.95);
+}
+
+
+.text-element-container .text-element-content .text-element-input {
+  width: 100%;
+  height: 100%;
+  fontSize: 16px;
+  background: transparent;
+  resize: none;
+  padding-left: 0.5em;
+  padding-right: 0.3em;
+}
+
+.text-element-container .text-element-content .text-element-input:focus {
+  outline: none;
+}

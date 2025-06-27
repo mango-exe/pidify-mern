@@ -1,0 +1,27 @@
+.text-toolbar {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 0.5em;
+  background: white;
+  border-right: 1px solid #ccc;
+  padding: 8px;
+  box-shadow: -8px 0 8px rgba(0, 0, 0, 0.1); /* shadow to the left */
+  border-radius: 8px 0 0 8px; /* rounded on left side */
+  z-index: 1000;
+}
+
+.text-toolbar select,
+.text-toolbar input[type="color"],
+.text-toolbar button {
+  margin-top: 1px;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px;
+  width: 100%;
+}

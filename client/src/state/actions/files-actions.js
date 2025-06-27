@@ -51,7 +51,6 @@ export const uploadPDFFile = createAsyncThunk(
   'pdf/uploadPDFFile',
   async (fileFormData, thunkAPI) => {
     try {
-      console.warn(fileFormData)
       const { auth } = thunkAPI.getState()
       console.warn(auth)
       await axios.post(`${SERVER}/file-api/upload`, fileFormData, {

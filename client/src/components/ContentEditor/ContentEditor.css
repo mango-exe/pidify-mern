@@ -45,8 +45,12 @@
   transition: box-shadow 0.3s ease;
 }
 
+.content-editor-container .content-editor-content .text-container:focus {
+  outline: none;
+}
+
 .content-editor-container .content-editor-content .text-container:hover {
-  outline: 6px dashed;
+  outline: 6px solid;
   outline-offset: 10px;
   outline-color: #8b5cf6;
   cursor: pointer;

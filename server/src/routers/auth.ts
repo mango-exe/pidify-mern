@@ -22,7 +22,6 @@ router.get('/oauth/google/login', passport.authenticate('google', { scope: ['pro
 router.get('/oauth/google/callback', (req: Request, res: Response<IResponse>, next: NextFunction) => {
   passport.authenticate("google", (err: Error | null, userDetails: typeof User | false, info: any) => {
   if (err) {
-    console.warn(err)
     return res.status(500).json({ data: null, message: 'Server Error', timestamp: new Date() })
   }
 
@@ -30,7 +29,6 @@ router.get('/oauth/google/callback', (req: Request, res: Response<IResponse>, ne
     const validUserDetails = userDetails as typeof User & { _id: mongoose.Types.ObjectId }
     req.logIn(validUserDetails, async (err: Error | null) => {
       if (err) {
-        console.warn(err)
         return res.status(500).json({ data: null, message: 'Server Error', timestamp: new Date() })
       }
 
@@ -73,7 +71,6 @@ router.get('/access-token/:authorizationToken', async (req: Request, res: Respon
 })
 
 router.put('/logout', auth, async (req: Request, res: Response<IResponse>, next: NextFunction) => {
-  console.warn(req.body)
   const user = await models.User.findOne({ _id: req.body._id })
 
   if (!user) {

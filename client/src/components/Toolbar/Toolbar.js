@@ -1,39 +1,72 @@
-import React from 'react';
-import './Toolbar.css';
+import React, { useRef, useEffect, useState } from 'react'
+import { FaImage, FaTextHeight } from 'react-icons/fa'
+import TextElement from './TextElement'
+import './Toolbar.css'
+import TextElementToolbar from './TextElementToolbar'
 
-const Toolbar = () => {
+const Toolbar = ({ pageInViewport }) => {
+  const [isAddingTextElement, setIsAddingTextElement] = useState()
+  const [workingElementId, setWorkingElementId] = useState(null)
+
+  const editingElement = document.getElementsByClassName('editing')
+
+  useEffect(() => {
+    if (editingElement) {
+      console.warn(editingElement)
+
+    }
+
+  }, [editingElement])
+
+
+
+  const handleAddNewTextElement = () => {
+    if (!pageInViewport.current) return
+    setIsAddingTextElement(true)
+  }
+
+  const handleRemoveNewTextElement = () => {
+    if (!pageInViewport.current) return
+    setIsAddingTextElement(false)
+  }
+
+
+
   const tools = [
     {
       id: 'text',
-      label: 'Text',
-      onClick: () => alert('Text Tool Selected')
+      label: 'Add text',
+      icon: <FaTextHeight />,
+      onClick: handleAddNewTextElement
     },
     {
       id: 'image',
-      label: 'Image',
-      onClick: () => alert('Image Tool Selected')
-    },
-    {
-      id: 'font',
-      label: 'Font Style',
-      onClick: () => alert('Font Style Tool Selected')
+      label: 'Add image',
+      icon: <FaImage />,
+      onClick: () => {} // placeholder
     }
-  ];
+  ]
+
 
   return (
-    <div className="toolbar">
-      {tools.map(tool => (
-        <button
-          key={tool.id}
-          className="toolbar-button"
-          title={tool.label}
-          onClick={tool.onClick}
-        >
-          {tool.label}
-        </button>
-      ))}
-    </div>
-  );
-};
+    <>
+      <div className='toolbar'>
+        {tools.map((tool) => (
+          <button
+            key={tool.id}
+            className='toolbar-button'
+            title={tool.label}
+            onClick={tool.onClick}
+          >
+            <span className='label'>{tool.label}</span>
+            <span className='icon'>{tool.icon}</span>
+          </button>
+        ))}
+      </div>
+      {pageInViewport.current && isAddingTextElement && <TextElement pageInViewport={pageInViewport} onRemoveNewTextElement={handleRemoveNewTextElement} setWorkingElementId={setWorkingElementId} />}
+      {pageInViewport.current && isAddingTextElement && <TextElementToolbar workingElementId={workingElementId} />}
+    </>
+  )
+}
 
-export default Toolbar;
+export default Toolbar
