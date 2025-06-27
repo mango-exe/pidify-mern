@@ -6,18 +6,6 @@ import TextElementToolbar from './TextElementToolbar'
 
 const Toolbar = ({ pageInViewport }) => {
   const [isAddingTextElement, setIsAddingTextElement] = useState()
-  const [workingElementId, setWorkingElementId] = useState(null)
-
-  const editingElement = document.getElementsByClassName('editing')
-
-  useEffect(() => {
-    if (editingElement) {
-      console.warn(editingElement)
-
-    }
-
-  }, [editingElement])
-
 
 
   const handleAddNewTextElement = () => {
@@ -26,7 +14,6 @@ const Toolbar = ({ pageInViewport }) => {
   }
 
   const handleRemoveNewTextElement = () => {
-    if (!pageInViewport.current) return
     setIsAddingTextElement(false)
   }
 
@@ -63,8 +50,8 @@ const Toolbar = ({ pageInViewport }) => {
           </button>
         ))}
       </div>
-      {pageInViewport.current && isAddingTextElement && <TextElement pageInViewport={pageInViewport} onRemoveNewTextElement={handleRemoveNewTextElement} setWorkingElementId={setWorkingElementId} />}
-      {pageInViewport.current && isAddingTextElement && <TextElementToolbar workingElementId={workingElementId} />}
+      {pageInViewport.current && isAddingTextElement && <TextElement pageInViewport={pageInViewport} onRemoveNewTextElement={handleRemoveNewTextElement} />}
+      {pageInViewport.current && <TextElementToolbar />}
     </>
   )
 }

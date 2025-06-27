@@ -3,10 +3,17 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import { Rnd } from 'react-rnd'
 import { v4 as uuidv4 } from 'uuid'
+import { actions as contentEditorActions } from '../../../state/slices/content-editor-slice'
+import { useDispatch } from 'react-redux'
 
-const TextElement = ({ pageInViewport, onRemoveNewTextElement, setWorkingElementId }) => {
+const TextElement = ({ pageInViewport, onRemoveNewTextElement }) => {
+  const dispatch = useDispatch()
+
   const rndRef = useRef(null)
   const inputRef = useRef(null)
+
+
+
   const [showAddTextElement, setShowAddTextElement] = useState(false)
 
   const MIN_ELEMENT_WIDTH = 150
@@ -16,9 +23,9 @@ const TextElement = ({ pageInViewport, onRemoveNewTextElement, setWorkingElement
 
   useEffect(() => {
     if (showAddTextElement) {
-      setWorkingElementId(inputRef.current.id)
+      dispatch(contentEditorActions.setWorkingElement({ workingElementId: inputRef.current.id, type: 'ADD_TEXT_ELEMENT' }))
     }
-  })
+  }, [showAddTextElement])
 
   useEffect(() => {
     if (pageInViewport) {
@@ -88,9 +95,9 @@ const TextElement = ({ pageInViewport, onRemoveNewTextElement, setWorkingElement
 
   const handleRemoveNewElement = () => {
     setShowAddTextElement(false)
-    setWorkingElementId(null)
     onRemoveNewTextElement()
     inputRef.current = null
+    dispatch(contentEditorActions.unsetWorkingElement())
   }
 
   return (

@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import './TextElementToolbar.css'
+import { shallowEqual, useSelector } from 'react-redux'
 
-const TextElementToolbar = ({ workingElementId }) => {
+
+const TextElementToolbar = () => {
   const [textElement, setTextElement] = useState(null)
+  const [showTextElementToolbar, setShowTextElementToolbar] = useState(false)
+
+  const { workingElementId, actionType } = useSelector(state => state.contentEditor, shallowEqual)
+
+  useEffect(() => {
+    if (workingElementId && (actionType === 'ADD_TEXT_ELEMENT' || actionType === 'EDIT_TEXT_ELEMENT')) {
+      setShowTextElementToolbar(true)
+    } else {
+      setShowTextElementToolbar(false)
+    }
+  }, [workingElementId])
 
   useEffect(() => {
     if (workingElementId) {
@@ -59,32 +72,33 @@ const TextElementToolbar = ({ workingElementId }) => {
   }
 
   return (
-    <div className='text-toolbar'>
-      <select onChange={(e) => exec('fontFamily', e.target.value)} defaultValue=''>
-        <option value=''>Font</option>
-        <option value='Arial'>Arial</option>
-        <option value='Courier New'>Courier</option>
-        <option value='Georgia'>Georgia</option>
-        <option value='Times New Roman'>Times</option>
-        <option value='Verdana'>Verdana</option>
-      </select>
+    showTextElementToolbar ? (
+      <div className='text-toolbar'>
+        <select onChange={(e) => exec('fontFamily', e.target.value)} defaultValue=''>
+          <option value=''>Font</option>
+          <option value='Arial'>Arial</option>
+          <option value='Courier New'>Courier</option>
+          <option value='Georgia'>Georgia</option>
+          <option value='Times New Roman'>Times</option>
+          <option value='Verdana'>Verdana</option>
+        </select>
 
-      <select onChange={(e) => exec('fontSize', e.target.value)} defaultValue=''>
-        <option value=''>Size</option>
-        {[12, 14, 16, 18, 20, 24, 28, 32].map(size => (
-          <option key={size} value={size}>{size}px</option>
-        ))}
-      </select>
+        <select onChange={(e) => exec('fontSize', e.target.value)} defaultValue=''>
+          <option value=''>Size</option>
+          {[12, 14, 16, 18, 20, 24, 28, 32].map(size => (
+            <option key={size} value={size}>{size}px</option>
+          ))}
+        </select>
 
-      <input type='color' onChange={(e) => exec('color', e.target.value)} />
+        <input type='color' onChange={(e) => exec('color', e.target.value)} />
 
-      <button onClick={() => exec('bold')}><b>B</b></button>
-      <button onClick={() => exec('italic')}><i>I</i></button>
-      <button onClick={() => exec('underline')}><u>U</u></button>
-      <button onClick={() => exec('strikeThrough')}><s>S</s></button>
-    </div>
+        <button onClick={() => exec('bold')}><b>B</b></button>
+        <button onClick={() => exec('italic')}><i>I</i></button>
+        <button onClick={() => exec('underline')}><u>U</u></button>
+        <button onClick={() => exec('strikeThrough')}><s>S</s></button>
+      </div>
+    ) : null
   )
-
 }
 
 export default TextElementToolbar

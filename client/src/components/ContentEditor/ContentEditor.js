@@ -4,18 +4,18 @@ import { Card } from 'primereact/card'
 import Toolbar from '../Toolbar'
 
 import { useParams } from 'react-router'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector, shallowEqual } from 'react-redux'
 import { actions as filesActions } from '../../state/slices/files-slice'
+import { actions as contentEditorActions } from '../../state/slices/content-editor-slice'
 
 
 const ContentEditor = () => {
   const params = useParams()
   const dispatch = useDispatch()
 
-  const currentEditingElement = useRef(null)
-
   const { alias } = params
 
+  const { workingElementId, actionType } = useSelector(state => state.contentEditor, shallowEqual)
   const { fileContent } = useSelector(state => state.file)
 
   const pageInViewport = useRef(null)
@@ -60,27 +60,25 @@ const ContentEditor = () => {
 
   useEffect(() => {
     if (fileContent && pageInViewport) {
-      let lastEdited = null
 
       const handleClick = (event) => {
         const clickedElement = event.target
+        const currentEditingElement = document.getElementById(workingElementId)
 
-        if (!clickedElement.hasAttribute('element-supports') || clickedElement.getAttribute('element-supports') !== 'editing') {
-          return
-        }
+        if (actionType === 'EDIT_TEXT_ELEMENT' && currentEditingElement && pageInViewport.current.contains(clickedElement)) {
 
-
-        if (currentEditingElement?.current && lastEdited?.id && currentEditingElement.current.id !== clickedElement?.id) {
-          currentEditingElement.current.contentEditable = false
-          currentEditingElement.current.blur()
-          currentEditingElement.current.classList.remove('editing')
-          currentEditingElement.current.classList.add('text-container')
-
-          if (!currentEditingElement.current.textContent && pageInViewport.current.contains(currentEditingElement.current)) {
-            console.warn(currentEditingElement.current)
-            pageInViewport.current.removeChild(currentEditingElement.current)
+          if (clickedElement.id !== currentEditingElement.id) {
+            currentEditingElement.contentEditable = false
+            currentEditingElement.blur()
+            currentEditingElement.classList.remove('editing')
+            currentEditingElement.classList.add('text-container')
           }
-          currentEditingElement.current = null
+
+          if (!currentEditingElement.textContent && pageInViewport.current.contains(currentEditingElement)) {
+            pageInViewport.current.removeChild(currentEditingElement)
+          }
+
+          dispatch(contentEditorActions.unsetWorkingElement())
         }
       }
 
@@ -90,37 +88,39 @@ const ContentEditor = () => {
         if (!clickedElement.hasAttribute('element-supports')) return
         if (clickedElement.getAttribute('element-supports') !== 'editing') return
 
-        currentEditingElement.current = clickedElement
-        const clickedElementClassArray = Array.from(clickedElement.classList)
-        if (clickedElementClassArray.includes('text-container') && clickedElement.textContent) {
+        if (clickedElement.textContent) {
+
+          const lastEditingElement = document.getElementById(workingElementId)
 
           // Clean up previous editable element
-          if (lastEdited && lastEdited !== clickedElement) {
-            lastEdited.contentEditable = false
-            lastEdited.classList.remove('editing')
-            lastEdited.classList.add('text-container')
+          if (lastEditingElement && lastEditingElement.id !== clickedElement.id) {
+            lastEditingElement.contentEditable = false
+            lastEditingElement.classList.remove('editing')
+            lastEditingElement.classList.add('text-container')
+
+            const existingButton = lastEditingElement.querySelector('.close-edit-button')
+            if (existingButton) existingButton.remove()
+
+            dispatch(contentEditorActions.unsetWorkingElement())
           }
 
-          // Enable editing on clicked element
           clickedElement.contentEditable = true
           clickedElement.focus()
           clickedElement.classList.add('editing')
           clickedElement.classList.remove('text-container')
-
-          // Remember this element for future cleanup
-          lastEdited = clickedElement
+          dispatch(contentEditorActions.setWorkingElement({ workingElementId: clickedElement.id, actionType: 'EDIT_TEXT_ELEMENT' }))
+          // Remove existing button if any
         }
       }
 
       document.addEventListener('dblclick', handleDoubleClick)
       document.addEventListener('click', handleClick)
-
       return () => {
         document.removeEventListener('dblclick', handleDoubleClick)
         document.removeEventListener('click', handleClick)
       }
     }
-  }, [fileContent])
+  }, [fileContent, workingElementId])
 
 
   return (
