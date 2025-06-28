@@ -1,23 +1,22 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FaImage, FaTextHeight } from 'react-icons/fa'
 import TextElement from './TextElement'
 import './Toolbar.css'
 import TextElementToolbar from './TextElementToolbar'
+import { useSelector, shallowEqual, useDispatch } from 'react-redux'
+import { actions as contentEditorActions, contentEditorActionTypes } from '../../state/slices/content-editor-slice'
+
+import { v4 as uuidv4 } from 'uuid'
 
 const Toolbar = ({ pageInViewport }) => {
-  const [isAddingTextElement, setIsAddingTextElement] = useState()
+  const dispatch = useDispatch()
 
+  const { workingElementId, actionType } = useSelector(state => state.contentEditor, shallowEqual)
 
   const handleAddNewTextElement = () => {
     if (!pageInViewport.current) return
-    setIsAddingTextElement(true)
+    dispatch(contentEditorActions.setWorkingElement({ workingElementId: uuidv4(), actionType: 'ADD_TEXT_ELEMENT' }))
   }
-
-  const handleRemoveNewTextElement = () => {
-    setIsAddingTextElement(false)
-  }
-
-
 
   const tools = [
     {
@@ -50,7 +49,7 @@ const Toolbar = ({ pageInViewport }) => {
           </button>
         ))}
       </div>
-      {pageInViewport.current && isAddingTextElement && <TextElement pageInViewport={pageInViewport} onRemoveNewTextElement={handleRemoveNewTextElement} />}
+      {workingElementId && (actionType === contentEditorActionTypes.ADD_TEXT_ELEMENT) && <TextElement pageInViewport={pageInViewport} />}
       {pageInViewport.current && <TextElementToolbar />}
     </>
   )

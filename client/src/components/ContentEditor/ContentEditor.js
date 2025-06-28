@@ -6,7 +6,7 @@ import Toolbar from '../Toolbar'
 import { useParams } from 'react-router'
 import { useDispatch, useSelector, shallowEqual } from 'react-redux'
 import { actions as filesActions } from '../../state/slices/files-slice'
-import { actions as contentEditorActions } from '../../state/slices/content-editor-slice'
+import { actions as contentEditorActions, contentEditorActionTypes } from '../../state/slices/content-editor-slice'
 
 
 const ContentEditor = () => {
@@ -62,55 +62,14 @@ const ContentEditor = () => {
     if (fileContent && pageInViewport) {
 
       const handleClick = (event) => {
-        const clickedElement = event.target
-        const currentEditingElement = document.getElementById(workingElementId)
-
-        if (actionType === 'EDIT_TEXT_ELEMENT' && currentEditingElement && pageInViewport.current.contains(clickedElement)) {
-
-          if (clickedElement.id !== currentEditingElement.id) {
-            currentEditingElement.contentEditable = false
-            currentEditingElement.blur()
-            currentEditingElement.classList.remove('editing')
-            currentEditingElement.classList.add('text-container')
-          }
-
-          if (!currentEditingElement.textContent && pageInViewport.current.contains(currentEditingElement)) {
-            pageInViewport.current.removeChild(currentEditingElement)
-          }
-
-          dispatch(contentEditorActions.unsetWorkingElement())
+        if (actionType === contentEditorActionTypes.EDIT_TEXT_ELEMENT && pageInViewport.current.contains(event.target) ) {
+          dispatch(contentEditorActions.cancelEditingElement({ actionType: contentEditorActionTypes.CANCEL_EDITING }))
         }
       }
 
       const handleDoubleClick = (event) => {
         const clickedElement = event.target
-
-        if (!clickedElement.hasAttribute('element-supports')) return
-        if (clickedElement.getAttribute('element-supports') !== 'editing') return
-
-        if (clickedElement.textContent) {
-
-          const lastEditingElement = document.getElementById(workingElementId)
-
-          // Clean up previous editable element
-          if (lastEditingElement && lastEditingElement.id !== clickedElement.id) {
-            lastEditingElement.contentEditable = false
-            lastEditingElement.classList.remove('editing')
-            lastEditingElement.classList.add('text-container')
-
-            const existingButton = lastEditingElement.querySelector('.close-edit-button')
-            if (existingButton) existingButton.remove()
-
-            dispatch(contentEditorActions.unsetWorkingElement())
-          }
-
-          clickedElement.contentEditable = true
-          clickedElement.focus()
-          clickedElement.classList.add('editing')
-          clickedElement.classList.remove('text-container')
-          dispatch(contentEditorActions.setWorkingElement({ workingElementId: clickedElement.id, actionType: 'EDIT_TEXT_ELEMENT' }))
-          // Remove existing button if any
-        }
+        dispatch(contentEditorActions.setWorkingElement({ workingElementId: clickedElement.id, actionType: contentEditorActionTypes.EDIT_TEXT_ELEMENT }))
       }
 
       document.addEventListener('dblclick', handleDoubleClick)

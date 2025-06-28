@@ -1,37 +1,28 @@
 import './TextElement.css'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { Rnd } from 'react-rnd'
-import { v4 as uuidv4 } from 'uuid'
 import { actions as contentEditorActions } from '../../../state/slices/content-editor-slice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector, shallowEqual } from 'react-redux'
 
-const TextElement = ({ pageInViewport, onRemoveNewTextElement }) => {
+const TextElement = ({ pageInViewport }) => {
   const dispatch = useDispatch()
 
   const rndRef = useRef(null)
   const inputRef = useRef(null)
+  const [hasText, setHasText] = useState(false)
 
+  const { workingElementId } = useSelector(state => state.contentEditor, shallowEqual)
 
+  useEffect(() => {
+    console.warn(workingElementId, inputRef)
 
-  const [showAddTextElement, setShowAddTextElement] = useState(false)
+  }, [workingElementId])
 
   const MIN_ELEMENT_WIDTH = 150
   const PADDING_RIGHT_TEXT = 10
 
   const pageInViewportBounds = pageInViewport.current.getBoundingClientRect()
-
-  useEffect(() => {
-    if (showAddTextElement) {
-      dispatch(contentEditorActions.setWorkingElement({ workingElementId: inputRef.current.id, type: 'ADD_TEXT_ELEMENT' }))
-    }
-  }, [showAddTextElement])
-
-  useEffect(() => {
-    if (pageInViewport) {
-      setShowAddTextElement(true)
-    }
-  }, [pageInViewport])
 
   const handleSaveTextElement = () => {
     const newTextElement = inputRef.current.cloneNode(true)
@@ -94,15 +85,12 @@ const TextElement = ({ pageInViewport, onRemoveNewTextElement }) => {
   }
 
   const handleRemoveNewElement = () => {
-    setShowAddTextElement(false)
-    onRemoveNewTextElement()
-    inputRef.current = null
     dispatch(contentEditorActions.unsetWorkingElement())
   }
 
   return (
     <>
-      {showAddTextElement && pageInViewport?.current &&
+      {
         ReactDOM.createPortal(
           <Rnd
             ref={rndRef}
@@ -126,15 +114,16 @@ const TextElement = ({ pageInViewport, onRemoveNewTextElement }) => {
             <div className='text-element-content'>
               <div className='buttons-container'>
                 <button onClick={handleRemoveNewElement}>-</button>
-                <button onClick={handleSaveTextElement} disabled={!inputRef?.current?.textContent}>＋</button>
+                <button onClick={handleSaveTextElement} disabled={!hasText}>＋</button>
               </div>
               <div
                 ref={inputRef}
-                id={uuidv4()}
+                id={workingElementId}
                 contentEditable
                 className='text-element-input'
                 onInput={(e) => {
                   handleInputResize?.(e)
+                  setHasText(!!e.currentTarget.textContent.trim())
                 }}
               />
             </div>

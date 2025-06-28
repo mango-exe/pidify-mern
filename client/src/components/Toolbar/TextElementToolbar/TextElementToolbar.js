@@ -15,7 +15,7 @@ const TextElementToolbar = () => {
     } else {
       setShowTextElementToolbar(false)
     }
-  }, [workingElementId])
+  }, [workingElementId, actionType])
 
   useEffect(() => {
     if (workingElementId) {
@@ -83,12 +83,14 @@ const TextElementToolbar = () => {
           <option value='Verdana'>Verdana</option>
         </select>
 
-        <select onChange={(e) => exec('fontSize', e.target.value)} defaultValue=''>
-          <option value=''>Size</option>
-          {[12, 14, 16, 18, 20, 24, 28, 32].map(size => (
-            <option key={size} value={size}>{size}px</option>
-          ))}
-        </select>
+        <input
+          type="number"
+          min="1"
+          onChange={(e) => exec('fontSize', e.target.value)}
+          placeholder="Size"
+          style={{ width: '60px' }}
+        />
+
 
         <input type='color' onChange={(e) => exec('color', e.target.value)} />
 
