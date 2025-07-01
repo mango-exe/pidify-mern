@@ -56,6 +56,42 @@
   cursor: pointer;
 }
 
+.content-editor-container .content-editor-content .image-container {
+  transition: box-shadow 0.3s ease;
+}
+
+.content-editor-container .content-editor-content .image-container .remove-button {
+  display: none;          /* hidden by default */
+  position: absolute;
+  top: -14px;
+  right: -12px;
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-weight: bold;
+  line-height: 18px;
+  padding: 0;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.content-editor-container .content-editor-content .image-container:focus {
+  outline: none;
+}
+
+.content-editor-container .content-editor-content .image-container:hover {
+  outline: 6px solid;
+  outline-color: #8b5cf6;
+  cursor: pointer;
+}
+
+.content-editor-container .content-editor-content .image-container:hover .remove-button {
+  display: block;         /* show on hover */
+}
+
 .content-editor-container .content-editor-content .editing  {
   outline: 6px dashed;
   outline-offset: 10px;

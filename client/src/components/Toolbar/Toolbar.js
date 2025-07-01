@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import { FaImage, FaTextHeight } from 'react-icons/fa'
-import TextElement from './TextElement'
 import './Toolbar.css'
-import TextElementToolbar from './TextElementToolbar'
+import React from 'react'
+
+import { FaImage, FaTextHeight } from 'react-icons/fa'
+
 import { useSelector, shallowEqual, useDispatch } from 'react-redux'
 import { actions as contentEditorActions, contentEditorActionTypes } from '../../state/slices/content-editor-slice'
-
 import { v4 as uuidv4 } from 'uuid'
+
+import TextElementToolbar from './TextElementToolbar'
+import TextElement from './TextElement'
+import ImageElement from './ImageElement'
+
 
 const Toolbar = ({ pageInViewport }) => {
   const dispatch = useDispatch()
@@ -15,7 +19,12 @@ const Toolbar = ({ pageInViewport }) => {
 
   const handleAddNewTextElement = () => {
     if (!pageInViewport.current) return
-    dispatch(contentEditorActions.setWorkingElement({ workingElementId: uuidv4(), actionType: 'ADD_TEXT_ELEMENT' }))
+    dispatch(contentEditorActions.setWorkingElement({ workingElementId: uuidv4(), actionType: contentEditorActionTypes.ADD_TEXT_ELEMENT }))
+  }
+
+  const handleAddNewImageElement = () => {
+    if (!pageInViewport.current) return
+    dispatch(contentEditorActions.setWorkingElement({ workingElementId: uuidv4(), actionType: contentEditorActionTypes.ADD_IMAGE_ELEMENT }))
   }
 
   const tools = [
@@ -29,7 +38,7 @@ const Toolbar = ({ pageInViewport }) => {
       id: 'image',
       label: 'Add image',
       icon: <FaImage />,
-      onClick: () => {} // placeholder
+      onClick: handleAddNewImageElement // placeholder
     }
   ]
 
@@ -50,6 +59,7 @@ const Toolbar = ({ pageInViewport }) => {
         ))}
       </div>
       {workingElementId && (actionType === contentEditorActionTypes.ADD_TEXT_ELEMENT) && <TextElement pageInViewport={pageInViewport} />}
+      {workingElementId && (actionType === contentEditorActionTypes.ADD_IMAGE_ELEMENT) && <ImageElement pageInViewport={pageInViewport} />}
       {pageInViewport.current && <TextElementToolbar />}
     </>
   )

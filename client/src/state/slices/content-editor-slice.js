@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 export const contentEditorActionTypes = {
+  ADD_IMAGE_ELEMENT: 'ADD_IMAGE_ELEMENT',
   ADD_TEXT_ELEMENT: 'ADD_TEXT_ELEMENT',
   EDIT_TEXT_ELEMENT: 'EDIT_TEXT_ELEMENT',
   UNSET_ELEMENT: 'UNSET_ELEMENT',
@@ -10,6 +11,15 @@ export const contentEditorActionTypes = {
 const initialState = {
   workingElementId: null,
   actionType: null
+}
+
+const processAddImageElement = (_, state) => {
+  // if (state.actionType === contentEditorActionTypes.EDIT_TEXT_ELEMENT) {
+  //   const editingElement = document.getElementById(state.workingElementId)
+  //   editingElement.contentEditable = false
+  //   editingElement.classList.remove('editing')
+  //   editingElement.classList.add('text-container')
+  // }
 }
 
 const processAddTextElement = (_, state) => {
@@ -61,6 +71,9 @@ const processCancelEditingElement = (state) => {
 
 const processWorkingElement = (workingElementId, actionType, state) => {
   switch (actionType) {
+    case contentEditorActionTypes.ADD_IMAGE_ELEMENT:
+      processAddImageElement(workingElementId, state)
+      break
     case contentEditorActionTypes.ADD_TEXT_ELEMENT:
       processAddTextElement(null, state)
       break
