@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './TextElementToolbar.css'
 import { shallowEqual, useSelector } from 'react-redux'
+import { contentEditorActionTypes  } from '../../../state/slices/content-editor-slice'
 
 
 const TextElementToolbar = () => {
@@ -10,7 +11,7 @@ const TextElementToolbar = () => {
   const { workingElementId, actionType } = useSelector(state => state.contentEditor, shallowEqual)
 
   useEffect(() => {
-    if (workingElementId && (actionType === 'ADD_TEXT_ELEMENT' || actionType === 'EDIT_TEXT_ELEMENT')) {
+    if (workingElementId && (actionType === contentEditorActionTypes.ADD_TEXT_ELEMENT || actionType === contentEditorActionTypes.EDIT_TEXT_ELEMENT)) {
       setShowTextElementToolbar(true)
     } else {
       setShowTextElementToolbar(false)

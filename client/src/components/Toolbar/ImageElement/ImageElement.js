@@ -16,6 +16,7 @@ const ImageElement = ({ pageInViewport }) => {
   const clickTriggeredRef = useRef(null)
   const rndRef = useRef(null)
   const inputRef = useRef(null)
+  const imageRef = useRef(null)
 
   const { workingElementId } = useSelector(state => state.contentEditor, shallowEqual)
 
@@ -63,10 +64,8 @@ const ImageElement = ({ pageInViewport }) => {
     container.style.position = 'absolute'
     container.style.left = `${imageDimensions.x}px`
     container.style.top = `${imageDimensions.y}px`
-    console.warn(imageDimensions)
     container.style.width = imageDimensions.width
     container.style.height = imageDimensions.height
-    container.id = workingElementId
     container.classList.add('image-container')
     container.setAttribute('element-supports', 'editing')
     container.style.userSelect = 'none'
@@ -77,13 +76,14 @@ const ImageElement = ({ pageInViewport }) => {
 
     // Create the image
     const imgElement = document.createElement('img')
+    imgElement.id = workingElementId
     imgElement.src = selectedImage.src
     imgElement.style.width = '100%'
     imgElement.style.height = '100%'
     imgElement.style.display = 'block'
-    imgElement.style.pointerEvents = 'none' // prevent blocking button clicks
+    imgElement.style.pointerEvents = 'none'
+    imgElement.style.opacity = imageRef.current.style.opacity
 
-    // Create the close button
     const removeImageButton = document.createElement('button')
     removeImageButton.textContent = '×'
     removeImageButton.classList.add('remove-button')
@@ -92,50 +92,13 @@ const ImageElement = ({ pageInViewport }) => {
       container.remove()
     })
 
-    // Append image and button inside container
     container.appendChild(imgElement)
     container.appendChild(removeImageButton)
 
-    // Append container to page viewport
-    console.warn(container)
     pageInViewport.current.appendChild(container)
 
-    // Cleanup
     handleRemoveNewElement()
   }
-
-
-  // const handleSaveImageElement = () => {
-  //   const imgElement = document.createElement('img')
-  //   imgElement.src = selectedImage.src
-  //   imgElement.style.position = 'absolute'
-
-  //   imgElement.style.left = `${imageDimensions.x}px`
-  //   imgElement.style.top = `${imageDimensions.y}px`
-  //   imgElement.style.width = imageDimensions.width
-  //   imgElement.style.height = imageDimensions.height
-  //   imgElement.id = workingElementId
-
-  //   imgElement.classList.add('image-container')
-  //   imgElement.setAttribute('element-supports', 'editing')
-
-  //   const removeImageButton = document.createElement('button')
-  //   removeImageButton.textContent = 'X'
-  //   removeImageButton.addEventListener('click', () => {
-  //     imgElement.remove()
-  //   })
-  //   removeImageButton.style.position = 'absolute'
-  //   removeImageButton.style.left = `${imageDimensions.x}px`
-  //   removeImageButton.style.top = `${imageDimensions.y}px`
-  //   removeImageButton.style.width = '15px'
-  //   removeImageButton.style.height = '15px'
-  //   removeImageButton.style.backgroundColor = 'red'
-  //   removeImageButton.style.color = 'white'
-
-  //   pageInViewport.current.appendChild(imgElement)
-  //   pageInViewport.current.appendChild(removeImageButton)
-  //   handleRemoveNewElement()
-  // }
 
   const handleRemoveNewElement = () => {
     dispatch(contentEditorActions.unsetWorkingElement())
@@ -158,8 +121,6 @@ const ImageElement = ({ pageInViewport }) => {
           className='text-element-container'
           onDragStop={(e, d) => { setImageDimensions((prev) => ({ ...prev, x: d.x, y: d.y })) }}
           onResizeStop={(e, direction, ref, delta, position) => {
-            console.warn(ref.style.width)
-            console.warn(ref.style.height)
             setImageDimensions((prev) => ({
               ...prev,
               width: ref.style.width,
@@ -174,14 +135,14 @@ const ImageElement = ({ pageInViewport }) => {
             </div>
             <input
               ref={inputRef}
-              id={workingElementId}
               onChange={handleBrowserSelectImage}
               className='text-element-input'
               type='file'
               accept='image/*'
               style={{ width: '100%', height: '100%', position: 'absolute', opacity: 0, cursor: 'pointer' }}
             />
-            {selectedImage && <img src={selectedImage.src} alt={selectedImage.name} style={{ width: '100%', height: '100%', pointerEvents: 'none' }} />}
+            {selectedImage && <img ref={imageRef} id={workingElementId} src={selectedImage.src} alt={selectedImage.name} style={{ width: '100%', height: '100%', pointerEvents: 'none' }} />}
+
           </div>
         </Rnd>,
         pageInViewport.current

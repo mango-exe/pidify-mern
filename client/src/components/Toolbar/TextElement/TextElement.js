@@ -14,11 +14,6 @@ const TextElement = ({ pageInViewport }) => {
 
   const { workingElementId } = useSelector(state => state.contentEditor, shallowEqual)
 
-  useEffect(() => {
-    console.warn(workingElementId, inputRef)
-
-  }, [workingElementId])
-
   const MIN_ELEMENT_WIDTH = 150
   const PADDING_RIGHT_TEXT = 10
 

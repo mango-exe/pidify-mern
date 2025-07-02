@@ -7,6 +7,7 @@ import { useSelector, shallowEqual, useDispatch } from 'react-redux'
 import { actions as contentEditorActions, contentEditorActionTypes } from '../../state/slices/content-editor-slice'
 import { v4 as uuidv4 } from 'uuid'
 
+import ImageElementToolbar from './ImageElementToolbar/ImageElementToolbar'
 import TextElementToolbar from './TextElementToolbar'
 import TextElement from './TextElement'
 import ImageElement from './ImageElement'
@@ -61,6 +62,7 @@ const Toolbar = ({ pageInViewport }) => {
       {workingElementId && (actionType === contentEditorActionTypes.ADD_TEXT_ELEMENT) && <TextElement pageInViewport={pageInViewport} />}
       {workingElementId && (actionType === contentEditorActionTypes.ADD_IMAGE_ELEMENT) && <ImageElement pageInViewport={pageInViewport} />}
       {pageInViewport.current && <TextElementToolbar />}
+      {pageInViewport.current && <ImageElementToolbar />}
     </>
   )
 }
