@@ -26,9 +26,17 @@ const ImageElement = ({ pageInViewport }) => {
   useEffect(() => {
     if (inputRef.current && !clickTriggeredRef.current) {
       inputRef.current.click()
+      document.body.onfocus = handleCheckEmptyUpload
       clickTriggeredRef.current = true
     }
   }, [pageInViewport])
+
+  const handleCheckEmptyUpload = () => {
+    if (!inputRef.current.files.length) {
+      dispatch(contentEditorActions.unsetWorkingElement())
+    }
+    document.body.onfocus = null
+  }
 
   const getBase64URI = async (file) => {
     return new Promise((resolve, reject) => {
@@ -46,8 +54,10 @@ const ImageElement = ({ pageInViewport }) => {
   }
 
   const handleBrowserSelectImage = async (evt) => {
+     console.warn(evt)
      try {
       const file = evt.target.files[0]
+      if (!file) return
 
       const imageSrc = await getBase64URI(file)
       inputRef.current.style.display = 'none'
