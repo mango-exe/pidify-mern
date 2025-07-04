@@ -20,7 +20,6 @@ const ImageElement = ({ pageInViewport }) => {
 
   const { workingElementId } = useSelector(state => state.contentEditor, shallowEqual)
 
-
   const pageInViewportBounds = pageInViewport.current.getBoundingClientRect()
 
   useEffect(() => {
@@ -54,7 +53,6 @@ const ImageElement = ({ pageInViewport }) => {
   }
 
   const handleBrowserSelectImage = async (evt) => {
-     console.warn(evt)
      try {
       const file = evt.target.files[0]
       if (!file) return
@@ -69,7 +67,6 @@ const ImageElement = ({ pageInViewport }) => {
   }
 
   const handleSaveImageElement = () => {
-    // Create a container for image + button
     const container = document.createElement('div')
     container.style.position = 'absolute'
     container.style.left = `${imageDimensions.x}px`
@@ -84,7 +81,6 @@ const ImageElement = ({ pageInViewport }) => {
     container.style.border = '1px solid transparent'
     container.style.display = 'inline-block'
 
-    // Create the image
     const imgElement = document.createElement('img')
     imgElement.id = workingElementId
     imgElement.src = selectedImage.src

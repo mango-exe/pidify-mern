@@ -10,32 +10,11 @@ import { WSWrapper } from './lib/ws-lib'
 
 
 
-/*
-  TODO:
-  - models
-  - routes, routers, controllers - scaffhold
-  - passport intergration
-  - auth middleware
-*/
-
-
-/*
-  TODO:
-    -- pdf upload
-    -- pdf extract
-      -- add the PDF fileMeta (PROCESSING STATE) to queue
-      -- a worker will run sepparately and process each task
-      -- the worker will extract the html and save it to the file directory
-      -- the worker will change the state of the fileMeta to (PROCESSED)
-      -- the worker will notify the user
-    -- pdf extracting is done using queue
-    -- notifications using websockets when PDF is extracting
-*/
-
 const runServer = async () => {
   try {
     const app = await initApp()
-    await buildDockerFile()
+    await buildDockerFile('service-pdf2htmlex', 'Dockerfile.pdf2htmlex')
+    await buildDockerFile('service-image-extractor', 'Dockerfile.image-extractor')
     ProcessingQueue.init()
     const credentials  = {
       key:  fs.readFileSync(path.join(__dirname, './certs/local.key')),
@@ -52,7 +31,7 @@ const runServer = async () => {
     console.warn(e)
   }
 }
-// const filePath = path.join(process.cwd(), 'src', 'files', 'import', 'a270cb14-00a9-4865-8840-19820609da0a', 'a270cb14-00a9-4865-8840-19820609da0a.html')
-// preprocessHTMLFile(filePath)
 
 runServer()
+// const filePath = path.join(process.cwd(), 'src', 'files', 'import', 'c0e82eb9-5741-412f-9b52-fe0f610d3b19', 'c0e82eb9-5741-412f-9b52-fe0f610d3b19.html')
+// preprocessHTMLFile(filePath)

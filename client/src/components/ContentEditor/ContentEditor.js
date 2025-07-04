@@ -31,13 +31,11 @@ const ContentEditor = () => {
 
     const container = document.getElementById('page-container')
     if (!container) {
-      console.warn('⚠️ page-container not found in DOM')
       return
     }
 
     const children = Array.from(container.children)
     if (!children.length) {
-      console.warn('⚠️ No children found in #page-container')
       return
     }
 
@@ -84,6 +82,9 @@ const ContentEditor = () => {
 
     const handleDoubleClick = (event) => {
       const clickedElement = event.target
+
+      if (!clickedElement.hasAttribute('element-supports')) return
+      if (clickedElement.getAttribute('element-supports') !== 'editing') return
       dispatch(contentEditorActions.setWorkingElement({
         workingElementId: clickedElement.id,
         actionType: contentEditorActionTypes.EDIT_TEXT_ELEMENT
