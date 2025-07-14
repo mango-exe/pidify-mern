@@ -77,7 +77,7 @@ const PPTUpload = () => {
 
 
   const fileUploadHeaderTemplate = (options) => {
-      const { className, chooseButton, cancelButton } = options;
+      const { className, chooseButton, cancelButton } = options
 
       const value = totalSize / 10000
       const formatedValue = fileUploadRef && fileUploadRef.current ? fileUploadRef.current.formatSize(totalSize) : '0 B'

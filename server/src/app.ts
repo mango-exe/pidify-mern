@@ -9,11 +9,13 @@ import fileUpload from 'express-fileupload'
 
 /*
   -- TODO:
-    1. fix logic for failed jobs
-    2. client component for navigating to file contet
-    3. client logic for editing file
-    4. diff logic for file edits (including versioning and access to older versions)
-    5. export for file
+    1. add logic for image replacement
+    2. diff logic for file edits (including versioning and access to older versions)
+    3. export for file
+
+    BUGS:
+    1. fix logic for failed job
+    2. websocket bug
 */
 
 

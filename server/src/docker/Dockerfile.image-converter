@@ -1,0 +1,32 @@
+# -------- Stage 1: Build pdfcpu from source --------
+FROM golang:latest AS pdfcpu-builder
+
+# Install pdfcpu CLI tool
+RUN go install github.com/pdfcpu/pdfcpu/cmd/pdfcpu@latest
+
+
+# -------- Stage 2: Final Image --------
+FROM python:3.11-slim
+
+# Install system dependencies including ffmpeg and ffprobe
+RUN apt-get update && apt-get install -y \
+    wget curl xz-utils \
+    build-essential libglib2.0-0 ca-certificates \
+    ffmpeg \
+ && rm -rf /var/lib/apt/lists/*
+
+# Install Python libraries
+RUN pip install --no-cache-dir pymupdf
+
+# Copy the pdfcpu binary from builder stage
+COPY --from=pdfcpu-builder /go/bin/pdfcpu /usr/local/bin/pdfcpu
+
+# Ensure it's executable
+RUN chmod +x /usr/local/bin/pdfcpu
+
+# Set workdir and volume
+WORKDIR /app
+VOLUME /app
+
+# Default command (adjust as needed)
+CMD ["python", "replace_images_with_crops.py", "input.pdf"]

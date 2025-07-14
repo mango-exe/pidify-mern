@@ -1,6 +1,7 @@
 import { exec } from "child_process"
 import path from 'path'
 import util from 'util'
+import fsPromises from 'fs/promises'
 
 const execAsync: (command: string) => Promise<{ stdout: string; stderr: string }> = util.promisify(exec)
 
@@ -43,7 +44,7 @@ const runDockerPDFtoHTMLService = async (fileAlias: string): Promise<void> => {
   const uid = process.getuid?.() || 1000
   const gid = process.getgid?.() || 1000
 
-  await execAsync(`docker run --rm -u ${uid}:${gid} -v ${fileBasedir}:/pdf -w /pdf service-pdf2htmlex ${fileAlias}.pdf --zoom 1.3`)
+  await execAsync(`docker run --rm -u ${uid}:${gid} -v ${fileBasedir}:/pdf -w /pdf service-pdf2htmlex ${fileAlias}.pdf --zoom 1.3 --dpi 100`)
 }
 
 const runDockerImageExtractorService = async (): Promise<Boolean> => {
@@ -78,9 +79,41 @@ const runDockerImageExtractorService = async (): Promise<Boolean> => {
   }
 }
 
+const runDockerImageConverterService = async (fileAlias: string): Promise<Boolean> => {
+  const imageConverterBaseDir = path.join(process.cwd(), 'src', 'image-converter')
+  const filePath = path.join(process.cwd(), 'src', 'files', 'import', fileAlias, `${fileAlias}.pdf`)
+
+  await fsPromises.copyFile(filePath, imageConverterBaseDir)
+
+  const uid = process.getuid?.() || 1000
+  const gid = process.getgid?.() || 1000
+
+  const dockerCmd = [
+    'docker run --rm',
+    `-u ${uid}:${gid}`,
+    `-v "${imageConverterBaseDir}":/app`,
+    'service-image-extractor',
+    `${fileAlias}.pdf`
+  ].join(' ')
+
+  try {
+    const { stdout, stderr } = await execAsync(dockerCmd)
+    if (stdout) {
+      console.log(stdout)
+      return true
+    } else {
+      console.warn(stderr)
+      return false
+    }
+  } catch (error: any) {
+    throw new Error(`Failed to run service-image-extractor container: ${error.message}`)
+  }
+}
+
 
 export {
   buildDockerFile,
   runDockerPDFtoHTMLService,
-  runDockerImageExtractorService
+  runDockerImageExtractorService,
+  runDockerImageConverterService
 }

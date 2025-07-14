@@ -5,14 +5,16 @@ import { v4 as uuidv4 } from 'uuid'
 import { saveImageProcessorSourceImage, getImageProcessorOutput, cleanImageProcessorWorkingDirectories, resizeImageToPDFPageSize } from '../lib/service-image-extractor-lib'
 import { runDockerImageExtractorService } from '../lib/docker-lib'
 
+const PDF_A4_PAGE_WIDTH = 796
+const PDF_A4_PAGE_HEIGHT = 1030
+
 const preprocessHTMLFile = async (filePath: string) => {
   try {
     if (!fs.existsSync(filePath)) {
-      throw new Error(`File not found: ${filePath}`);
+      throw new Error(`File not found: ${filePath}`)
     }
 
     const html = await fsPromise.readFile(filePath)
-
     const $ = cheerio.load(html)
 
     $('#sidebar').remove()
@@ -31,7 +33,7 @@ const preprocessHTMLFile = async (filePath: string) => {
       const savedImagePath = await saveImageProcessorSourceImage(imgContent)
 
       if (savedImagePath) {
-        await resizeImageToPDFPageSize(savedImagePath, 796, 1030)
+        await resizeImageToPDFPageSize(savedImagePath, PDF_A4_PAGE_WIDTH, PDF_A4_PAGE_HEIGHT)
         const imageExtractorResult = await runDockerImageExtractorService()
         if (imageExtractorResult) {
           pageImages = await getImageProcessorOutput()
@@ -44,6 +46,8 @@ const preprocessHTMLFile = async (filePath: string) => {
 
         newImageElement.attr('style', `position: absolute; top: ${pageImage.metadata.position.top}px; left: ${pageImage.metadata.position.left}px; width: ${pageImage.metadata.position.width}px; height: ${pageImage.metadata.position.height}px;`)
 
+        $(newImageElement).attr('class', 'image-container')
+        $(newImageElement).attr('element-supports', 'editing')
         $(pageElement).append(newImageElement)
       }
 
@@ -61,8 +65,7 @@ const preprocessHTMLFile = async (filePath: string) => {
           const childCurrentClass: string = $(childElement).attr('class') || ''
           $(childElement).attr('id', childId)
           $(childElement).attr('class', `${childCurrentClass} text-container`)
-          $(childElement).attr('element-supports', 'editing');
-
+          $(childElement).attr('element-supports', 'editing')
         })
       }
 

@@ -30,15 +30,15 @@ const FilesSidebar = () => {
   const jobStatusMapping = (jobStatus) => {
     switch (jobStatus) {
       case 'PENDING':
-        return 'Pending...';
+        return 'Pending...'
       case 'IN_PROGRESS':
-        return 'In Progress...';
+        return 'In Progress...'
       case 'FULFILLED':
-        return 'Completed';
+        return 'Completed'
       case 'FAILED':
-        return 'Failed';
+        return 'Failed'
       default:
-        return 'Unknown';
+        return 'Unknown'
     }
   }
 

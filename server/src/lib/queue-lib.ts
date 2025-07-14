@@ -2,7 +2,8 @@ import { Processor, Queue, Worker, Job } from 'bullmq'
 import IORedis, { Redis } from 'ioredis'
 import { models } from '../models'
 import { JobStatus } from '../types/models/filemeta'
-import { runDockerPDFtoHTMLService } from './docker-lib'
+import { runDockerPDFtoHTMLService, runDockerImageConverterService  } from './docker-lib'
+import { copyPDFFileToImageConverterWorkingDirectory, cleanImageConverterWorkingDirectories, replaceOrginalPDFWithImagesUpdatedPDF } from './service-image-converter-lib'
 import { preprocessHTMLFile } from './html-lib'
 import { WSWrapper } from './ws-lib'
 import path from 'path'
@@ -111,6 +112,16 @@ class ProcessingQueue {
 
     fileMeta.jobStatus = JobStatus.IN_PROGRESS
     await fileMeta.save()
+
+    try {
+      await copyPDFFileToImageConverterWorkingDirectory(fileAlias)
+      await runDockerImageConverterService(fileAlias)
+      await replaceOrginalPDFWithImagesUpdatedPDF(fileAlias)
+      await cleanImageConverterWorkingDirectories()
+    } catch (e: any) {
+      console.error(`Error during processing: ${e.message}`)
+      throw new Error(`Job failed for ${fileAlias}: ${e.toString()}`)
+    }
 
     try {
       await runDockerPDFtoHTMLService(fileAlias)

@@ -15,6 +15,7 @@ const runServer = async () => {
     const app = await initApp()
     await buildDockerFile('service-pdf2htmlex', 'Dockerfile.pdf2htmlex')
     await buildDockerFile('service-image-extractor', 'Dockerfile.image-extractor')
+    await buildDockerFile('service-image-converter', 'Dockerfile.image-converter')
     ProcessingQueue.init()
     const credentials  = {
       key:  fs.readFileSync(path.join(__dirname, './certs/local.key')),
