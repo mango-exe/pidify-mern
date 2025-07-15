@@ -1,14 +1,15 @@
 import * as cheerio from 'cheerio'
 import fs from 'fs'
+import path from  'path'
 import fsPromise from 'fs/promises'
 import { v4 as uuidv4 } from 'uuid'
 import { saveImageProcessorSourceImage, getImageProcessorOutput, cleanImageProcessorWorkingDirectories, resizeImageToPDFPageSize } from '../lib/service-image-extractor-lib'
 import { runDockerImageExtractorService } from '../lib/docker-lib'
+import { extractPageSizeFromStyles } from '../lib/pdf-info-lib'
 
-const PDF_A4_PAGE_WIDTH = 796
-const PDF_A4_PAGE_HEIGHT = 1030
 
-const preprocessHTMLFile = async (filePath: string) => {
+const preprocessHTMLFile = async (fileAlias: string) => {
+  const filePath = path.join(process.cwd(), 'src', 'files', 'import', fileAlias,  `${fileAlias}.html`)
   try {
     if (!fs.existsSync(filePath)) {
       throw new Error(`File not found: ${filePath}`)
@@ -16,6 +17,8 @@ const preprocessHTMLFile = async (filePath: string) => {
 
     const html = await fsPromise.readFile(filePath)
     const $ = cheerio.load(html)
+
+    const pageSize = extractPageSizeFromStyles($)
 
     $('#sidebar').remove()
     const pagesContainerElement = $('#page-container')
@@ -33,7 +36,7 @@ const preprocessHTMLFile = async (filePath: string) => {
       const savedImagePath = await saveImageProcessorSourceImage(imgContent)
 
       if (savedImagePath) {
-        await resizeImageToPDFPageSize(savedImagePath, PDF_A4_PAGE_WIDTH, PDF_A4_PAGE_HEIGHT)
+        await resizeImageToPDFPageSize(savedImagePath, pageSize.width, pageSize.height)
         const imageExtractorResult = await runDockerImageExtractorService()
         if (imageExtractorResult) {
           pageImages = await getImageProcessorOutput()
@@ -44,7 +47,7 @@ const preprocessHTMLFile = async (filePath: string) => {
         const newImageElement = $('<img>')
         newImageElement.attr('src', pageImage.src)
 
-        newImageElement.attr('style', `position: absolute; top: ${pageImage.metadata.position.top}px; left: ${pageImage.metadata.position.left}px; width: ${pageImage.metadata.position.width}px; height: ${pageImage.metadata.position.height}px;`)
+        newImageElement.attr('style', `position: absolute; top: ${pageImage.metadata.position.top}px; left: ${pageImage.metadata.position.left}px; width: ${pageImage.metadata.position.width}px; height: ${pageImage.metadata.position.height}px; z-index: 99;`)
 
         $(newImageElement).attr('class', 'image-container')
         $(newImageElement).attr('element-supports', 'editing')
@@ -66,6 +69,8 @@ const preprocessHTMLFile = async (filePath: string) => {
           $(childElement).attr('id', childId)
           $(childElement).attr('class', `${childCurrentClass} text-container`)
           $(childElement).attr('element-supports', 'editing')
+          const currentChildElementStyles = $(childElement).attr('style') || ''
+          $(childElement).attr('style', `${currentChildElementStyles} z-index: 100;`)
         })
       }
 
@@ -74,7 +79,12 @@ const preprocessHTMLFile = async (filePath: string) => {
       const elementCurrentClass: string = $(textElement).attr('class') || ''
       $(textElement).attr('class', `${elementCurrentClass} text-container`)
       $(textElement).attr('element-supports', 'editing');
+      const currentTextElementStyle = $(textElement).attr('style') || ''
+      $(textElement).attr('style', `${currentTextElementStyle} z-index: 100;`)
     }
+
+    // Remove all background images
+    $('.bi').remove()
 
     const preprocessedHTML = $.html()
     await fsPromise.writeFile(filePath, preprocessedHTML)

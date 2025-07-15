@@ -4,9 +4,10 @@ FROM golang:latest AS pdfcpu-builder
 # Install pdfcpu CLI tool
 RUN go install github.com/pdfcpu/pdfcpu/cmd/pdfcpu@latest
 
-
 # -------- Stage 2: Final Image --------
 FROM python:3.11-slim
+
+ENV HOME=/tmp
 
 # Install system dependencies including ffmpeg and ffprobe
 RUN apt-get update && apt-get install -y \
@@ -29,4 +30,4 @@ WORKDIR /app
 VOLUME /app
 
 # Default command (adjust as needed)
-CMD ["python", "replace_images_with_crops.py", "input.pdf"]
+CMD ["python", "replace_images_with_crops.py"]

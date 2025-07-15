@@ -3,10 +3,10 @@ import fsPromises from 'fs/promises'
 import fs from 'fs'
 
 const copyPDFFileToImageConverterWorkingDirectory = async (fileAlias: string): Promise<void> => {
-  const imageConverterBaseDir = path.join(process.cwd(), 'src', 'image-converter')
+  const imageConverterDestinationFile = path.join(process.cwd(), 'src', 'image-converter', `${fileAlias}.pdf`)
   const filePath = path.join(process.cwd(), 'src', 'files', 'import', fileAlias, `${fileAlias}.pdf`)
 
-  await fsPromises.copyFile(filePath, imageConverterBaseDir)
+  await fsPromises.copyFile(filePath, imageConverterDestinationFile)
 }
 
 

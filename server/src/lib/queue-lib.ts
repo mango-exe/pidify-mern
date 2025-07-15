@@ -119,6 +119,7 @@ class ProcessingQueue {
       await replaceOrginalPDFWithImagesUpdatedPDF(fileAlias)
       await cleanImageConverterWorkingDirectories()
     } catch (e: any) {
+      console.warn(e)
       console.error(`Error during processing: ${e.message}`)
       throw new Error(`Job failed for ${fileAlias}: ${e.toString()}`)
     }
@@ -131,8 +132,7 @@ class ProcessingQueue {
     }
 
 
-    const filePath = path.join(fileMeta.path, `${fileMeta.alias}.html`)
-    await preprocessHTMLFile(filePath)
+    await preprocessHTMLFile(fileAlias)
 
     fileMeta.jobStatus = JobStatus.FULFILLED
     await fileMeta.save()

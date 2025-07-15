@@ -8,14 +8,18 @@ import * as routers from './routers/index'
 import fileUpload from 'express-fileupload'
 
 /*
-  -- TODO:
-    1. add logic for image replacement
-    2. diff logic for file edits (including versioning and access to older versions)
-    3. export for file
+  TODO:
+    1. diff logic for file edits (including versioning and access to older versions)
+    2. export for file
+    3. generat thumbnails for pdf so that they appear in sidebar
 
-    BUGS:
+   BUGS:
     1. fix logic for failed job
     2. websocket bug
+    3. fix z-index for adding text
+    4. add set behind or set in front for images
+    5. fix scrollbar for files height
+    6. fix image editing
 */
 
 

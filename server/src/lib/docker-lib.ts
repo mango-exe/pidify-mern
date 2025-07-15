@@ -81,9 +81,6 @@ const runDockerImageExtractorService = async (): Promise<Boolean> => {
 
 const runDockerImageConverterService = async (fileAlias: string): Promise<Boolean> => {
   const imageConverterBaseDir = path.join(process.cwd(), 'src', 'image-converter')
-  const filePath = path.join(process.cwd(), 'src', 'files', 'import', fileAlias, `${fileAlias}.pdf`)
-
-  await fsPromises.copyFile(filePath, imageConverterBaseDir)
 
   const uid = process.getuid?.() || 1000
   const gid = process.getgid?.() || 1000
@@ -92,7 +89,9 @@ const runDockerImageConverterService = async (fileAlias: string): Promise<Boolea
     'docker run --rm',
     `-u ${uid}:${gid}`,
     `-v "${imageConverterBaseDir}":/app`,
-    'service-image-extractor',
+    'service-image-converter',
+    'python',
+    'replace_images_with_crops.py',
     `${fileAlias}.pdf`
   ].join(' ')
 
@@ -106,7 +105,7 @@ const runDockerImageConverterService = async (fileAlias: string): Promise<Boolea
       return false
     }
   } catch (error: any) {
-    throw new Error(`Failed to run service-image-extractor container: ${error.message}`)
+    throw new Error(`Failed to run service-image-converter container: ${error.message}`)
   }
 }
 
