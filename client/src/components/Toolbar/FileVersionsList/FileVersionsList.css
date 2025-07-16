@@ -1,0 +1,83 @@
+.file-versions-container {
+  position: absolute;
+  top: 18%;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 0.5em;
+  background: white;
+  border-right: 1px solid #ccc;
+  padding: 8px;
+  box-shadow: -8px 0 8px rgba(0, 0, 0, 0.1); /* shadow to the left */
+  border-radius: 8px 0 0 8px; /* rounded on left side */
+  z-index: 1000;
+  height: 20em;
+  width: 15em;
+}
+
+.file-versions-container .header {
+    margin-bottom: 1em;
+    padding: 0.2em;
+}
+
+.file-versions-container .file-versions-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 20em;
+  width: 100%;
+  padding: 1em;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+
+.file-versions-container .file-versions-list::-webkit-scrollbar {
+  width: 15px;
+}
+
+.file-versions-container .file-versions-list::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.file-versions-container .file-versions-list::-webkit-scrollbar-button {
+  display: none !important;
+}
+
+.file-versions-container .file-versions-list {
+  scrollbar-width: thin;
+  scrollbar-color: #8b5cf6 transparent;
+}
+
+.file-versions-container .file-versions-list .file-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+    height: 10vh;
+    min-height: 10vh;
+    text-align: center;
+    margin: 1em;
+    font-weight: bold;
+    font-size: 0.7em;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    padding: 0 0.5em;
+    overflow: hidden;
+    background-color: #8b5cf6;
+    color: white;
+}
+
+.file-versions-container .file-versions-list .file-item .file-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    padding: 0 0.5em;
+}

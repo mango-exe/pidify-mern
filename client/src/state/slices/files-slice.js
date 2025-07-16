@@ -1,11 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { uploadPDFFile, getPDFFiles, getPDFFileById, getPDFFileContent } from '../actions/files-actions'
+import { uploadPDFFile, getPDFFiles, getPDFFileById, getPDFFileContent, savePDFFileVersion, getPDFFileVersions  } from '../actions/files-actions'
 
 const initialState = {
   files: [],
+  fileVersions: [],
   file: null,
   fileContent: null,
   count: 0,
+  versionsCount: 0,
   error: null,
   fetching: false,
   fetched: false,
@@ -14,6 +16,11 @@ const initialState = {
 const filesSlice = createSlice({
   name: 'files',
   initialState,
+  reducers: {
+    startSavingPDFVersion: (state, action) => {
+      state.fetching = true
+    }
+  },
   extraReducers: (builder) => {
     // pending
     builder.addCase(getPDFFiles.pending, (state) => {
@@ -26,6 +33,12 @@ const filesSlice = createSlice({
       state.fetching = true
     })
     builder.addCase(uploadPDFFile.pending, (state) => {
+      state.fetching = true
+    })
+    builder.addCase(savePDFFileVersion.pending, (state) => {
+      state.fetching = true
+    })
+    builder.addCase(getPDFFileVersions.pending, (state) => {
       state.fetching = true
     })
 
@@ -52,6 +65,18 @@ const filesSlice = createSlice({
       state.fetching = false
       state.fetched = true
     })
+    builder.addCase(getPDFFileVersions.fulfilled, (state, action) => {
+      state.fileVersions = action.payload.data.fileVersions
+      state.versionsCount = action.payload.data.count
+      state.fetching = false
+      state.fetched = true
+    })
+    builder.addCase(savePDFFileVersion.fulfilled, (state, action) => {
+      state.fileVersions = action.payload.data.fileVersions
+      state.versionsCount = action.payload.data.count
+      state.fetching = false
+      state.fetched = true
+    })
 
     // rejected
     builder.addCase(getPDFFiles.rejected, (state, action) => {
@@ -70,14 +95,26 @@ const filesSlice = createSlice({
       state.error = action.payload.message
       state.fetching = false
     })
+    builder.addCase(getPDFFileVersions.rejected, (state, action) => {
+      state.error = action.payload.message
+      state.fetching = false
+    })
+    builder.addCase(savePDFFileVersion.rejected, (state, action) => {
+      state.error = action.payload.message
+      state.fetching = false
+    })
   }
 })
 
+const { startSavingPDFVersion } = filesSlice.actions
 const actions = {
   uploadPDFFile,
+  savePDFFileVersion,
   getPDFFiles,
   getPDFFileById,
-  getPDFFileContent
+  getPDFFileContent,
+  getPDFFileVersions,
+  startSavingPDFVersion
 }
 
 export { actions }

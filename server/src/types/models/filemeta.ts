@@ -8,6 +8,7 @@ enum JobStatus {
 }
 
 interface IFileMeta {
+  parentFile: mongoose.Types.ObjectId,
   path: string;
   alias: string;
   timestamp: Date;

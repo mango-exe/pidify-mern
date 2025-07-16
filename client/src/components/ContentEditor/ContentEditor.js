@@ -15,7 +15,7 @@ const ContentEditor = () => {
   const { alias } = params
 
   const { actionType } = useSelector(state => state.contentEditor, shallowEqual)
-  const { fileContent } = useSelector(state => state.file)
+  const { fileContent, file } = useSelector(state => state.file)
 
   const pageInViewport = useRef(null)
 
@@ -25,6 +25,12 @@ const ContentEditor = () => {
       dispatch(filesActions.getPDFFileContent(alias))
     }
   }, [alias, dispatch])
+
+  useEffect(() => {
+    if (file) {
+      dispatch(filesActions.getPDFFileVersions(alias))
+    }
+  }, [file])
 
   useEffect(() => {
     if (!fileContent) return
@@ -102,7 +108,7 @@ const ContentEditor = () => {
 
   return (
     <div className='main-area content-editor-container'>
-      <Card className='content-editor-content'>
+      <Card className='content-editor-content' title={`Working on ${file?.name}`}>
         {fileContent && (
           <div
             className='file-content-container'

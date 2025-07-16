@@ -1,22 +1,28 @@
 import './Toolbar.css'
 import React from 'react'
 
-import { FaImage, FaTextHeight } from 'react-icons/fa'
+import { FaImage, FaTextHeight, FaSave } from 'react-icons/fa'
 
+import { useParams } from 'react-router'
 import { useSelector, shallowEqual, useDispatch } from 'react-redux'
 import { actions as contentEditorActions, contentEditorActionTypes } from '../../state/slices/content-editor-slice'
+import { actions as filesActions } from '../../state/slices/files-slice'
 import { v4 as uuidv4 } from 'uuid'
-
 import ImageElementToolbar from './ImageElementToolbar/ImageElementToolbar'
 import TextElementToolbar from './TextElementToolbar'
 import TextElement from './TextElement'
 import ImageElement from './ImageElement'
+import FileVersionsList from './FileVersionsList'
 
 
 const Toolbar = ({ pageInViewport }) => {
   const dispatch = useDispatch()
 
+  const params = useParams()
+
+  const { alias } = params
   const { workingElementId, actionType } = useSelector(state => state.contentEditor, shallowEqual)
+  const { fileContent: originalPDFContent, fileVersions, file: fileMeta } = useSelector(state => state.file)
 
   const handleAddNewTextElement = () => {
     if (!pageInViewport.current) return
@@ -27,6 +33,36 @@ const Toolbar = ({ pageInViewport }) => {
     if (!pageInViewport.current) return
     dispatch(contentEditorActions.setWorkingElement({ workingElementId: uuidv4(), actionType: contentEditorActionTypes.ADD_IMAGE_ELEMENT }))
   }
+
+  const handleSaveDocument = () => {
+    dispatch(filesActions.startSavingPDFVersion())
+    const domParser = new DOMParser()
+
+    const updatedPDFContentContainer = document.querySelector('#page-container')
+
+    const originalPDFDOM = domParser.parseFromString(originalPDFContent, 'text/html')
+
+    const targetNode = originalPDFDOM.querySelector('#page-container')
+
+    const updatedSubtreeHTML = updatedPDFContentContainer.outerHTML
+
+    const tempDoc = domParser.parseFromString(updatedSubtreeHTML, 'text/html')
+    targetNode.replaceWith(tempDoc.querySelector('#page-container'))
+
+    const updatedPDFContent = originalPDFDOM.documentElement.outerHTML
+
+    const blob = new Blob([updatedPDFContent], { type: 'text/html' })
+    const file = new File([blob], 'updated-document.html', { type: 'text/html' })
+
+    const formData = new FormData()
+    formData.append('files', file)
+    if (fileMeta.parentFile?.alias) {
+      dispatch(filesActions.savePDFFileVersion({ fileFormData: formData, parentFileAlias: fileMeta.parentFile.alias }))
+    } else {
+      dispatch(filesActions.savePDFFileVersion({ fileFormData: formData, parentFileAlias: alias }))
+    }
+  }
+
 
   const tools = [
     {
@@ -40,7 +76,13 @@ const Toolbar = ({ pageInViewport }) => {
       label: 'Add image',
       icon: <FaImage />,
       onClick: handleAddNewImageElement // placeholder
-    }
+    },
+    {
+      id: 'save-document',
+      label: 'Save document',
+      icon: <FaSave />,
+      onClick: handleSaveDocument
+    },
   ]
 
 
@@ -63,6 +105,7 @@ const Toolbar = ({ pageInViewport }) => {
       {workingElementId && (actionType === contentEditorActionTypes.ADD_IMAGE_ELEMENT) && <ImageElement pageInViewport={pageInViewport} />}
       {pageInViewport.current && <TextElementToolbar />}
       {pageInViewport.current && <ImageElementToolbar />}
+      {fileMeta && !fileMeta.parentFile && fileVersions && fileVersions.length >0 && <FileVersionsList />}
     </>
   )
 }

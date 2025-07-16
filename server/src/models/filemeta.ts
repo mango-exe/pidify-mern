@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose'
 import { IFileMeta, JobStatus  } from '../types/models/filemeta'
 
 const FileMetaSchema = new Schema<IFileMeta>({
+  parentFile: { type: Schema.Types.ObjectId, ref: 'FileMeta', default: null },
   path: { type: String, required: true },
   alias: { type: String, required: true, unique: true },
   timestamp: Date,

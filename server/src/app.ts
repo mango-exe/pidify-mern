@@ -12,6 +12,7 @@ import fileUpload from 'express-fileupload'
     1. diff logic for file edits (including versioning and access to older versions)
     2. export for file
     3. generat thumbnails for pdf so that they appear in sidebar
+    4. add page and remove page
 
    BUGS:
     1. fix logic for failed job
