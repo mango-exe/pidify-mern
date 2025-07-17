@@ -51,6 +51,8 @@ const preprocessHTMLFile = async (fileAlias: string) => {
 
         $(newImageElement).attr('class', 'image-container')
         $(newImageElement).attr('element-supports', 'editing')
+        const elementId = uuidv4()
+        $(newImageElement).attr('id', elementId);
         $(pageElement).append(newImageElement)
       }
 

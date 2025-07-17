@@ -1,0 +1,23 @@
+.image-toolbar {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 0.5em;
+  background: white;
+  border-right: 1px solid #ccc;
+  padding: 8px;
+  box-shadow: -8px 0 8px rgba(0, 0, 0, 0.1); /* shadow to the left */
+  border-radius: 8px 0 0 8px; /* rounded on left side */
+  z-index: 1000;
+  width: 15em;
+}
+
+.image-toolbar .z-index-controls-container .z-index-controls {
+    display: flex;
+    flex-direction: column;
+}

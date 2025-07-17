@@ -80,6 +80,7 @@ const ImageElement = ({ pageInViewport }) => {
     container.style.boxSizing = 'border-box'
     container.style.border = '1px solid transparent'
     container.style.display = 'inline-block'
+    container.style.zIndex = imageRef.current.style.zIndex
 
     const imgElement = document.createElement('img')
     imgElement.id = workingElementId

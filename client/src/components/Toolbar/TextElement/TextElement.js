@@ -31,6 +31,7 @@ const TextElement = ({ pageInViewport }) => {
     newTextElement.style.width = `${width}px`
     newTextElement.style.height = `${height}px`
     newTextElement.style.display = 'block'
+    newTextElement.style.zIndex = '100'
     newTextElement.setAttribute('element-supports', 'editing')
     newTextElement.contentEditable = false
 
@@ -105,6 +106,7 @@ const TextElement = ({ pageInViewport }) => {
             }}
             bounds='parent'
             className='text-element-container'
+            style={{ zIndex: 100 }}
           >
             <div className='text-element-content'>
               <div className='buttons-container'>

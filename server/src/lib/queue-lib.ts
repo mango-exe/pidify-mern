@@ -73,10 +73,16 @@ class ProcessingQueue {
       ws.sendToClient(job.data.user.socketId, 'PDF_PROCESSING_JOB_FINISHED')
     })
 
-    this.worker.on('failed', (job: Job | undefined, err: Error) => {
+    this.worker.on('failed', async (job: Job | undefined, err: Error) => {
       if (!job) {
         console.error('Job is undefined in failed event:', err)
         return
+      }
+
+      const fileMeta = await models.FileMeta.findOne({ alias: job.data?.fileAlias })
+      if (fileMeta) {
+        fileMeta.jobStatus = JobStatus.FAILED
+        await fileMeta.save()
       }
 
       const data = job.data as PDFJobData
@@ -104,7 +110,6 @@ class ProcessingQueue {
   private async PDFWorkerProcessor(job: Job<{ fileAlias: string, user: IUser }>): Promise<void> {
     const { fileAlias } = job.data
     console.warn(`Processing job for ${fileAlias}`)
-
     const fileMeta = await models.FileMeta.findOne({ alias: fileAlias })
     if (!fileMeta) {
       throw new Error(`FileMeta not found for ${fileAlias}`)

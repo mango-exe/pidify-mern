@@ -77,7 +77,7 @@ const ContentEditor = () => {
 
     const handleClick = (event) => {
       if (
-        actionType === contentEditorActionTypes.EDIT_TEXT_ELEMENT &&
+        (actionType === contentEditorActionTypes.EDIT_TEXT_ELEMENT || actionType === contentEditorActionTypes.EDIT_IMAGE_ELEMENT) &&
         pageInViewport.current?.contains(event.target)
       ) {
         dispatch(contentEditorActions.cancelEditingElement({
@@ -91,10 +91,20 @@ const ContentEditor = () => {
 
       if (!clickedElement.hasAttribute('element-supports')) return
       if (clickedElement.getAttribute('element-supports') !== 'editing') return
-      dispatch(contentEditorActions.setWorkingElement({
-        workingElementId: clickedElement.id,
-        actionType: contentEditorActionTypes.EDIT_TEXT_ELEMENT
-      }))
+
+      const elementClassList = Array.from(clickedElement.classList)
+
+      if (elementClassList.includes('text-container')) {
+        dispatch(contentEditorActions.setWorkingElement({
+          workingElementId: clickedElement.id,
+          actionType: contentEditorActionTypes.EDIT_TEXT_ELEMENT
+        }))
+      } else if (elementClassList.includes('image-container')) {
+        dispatch(contentEditorActions.setWorkingElement({
+          workingElementId: clickedElement.id,
+          actionType: contentEditorActionTypes.EDIT_IMAGE_ELEMENT
+        }))
+      }
     }
 
     document.addEventListener('click', handleClick)

@@ -39,6 +39,12 @@ const Toolbar = ({ pageInViewport }) => {
 
   const handleSaveDocument = () => {
     dispatch(filesActions.startSavingPDFVersion())
+    const editingElement = document.querySelector('.editing')
+    if (editingElement) {
+      editingElement.classList.remove('editing')
+    }
+    dispatch(contentEditorActions.unsetWorkingElement())
+
     const domParser = new DOMParser()
 
     const updatedPDFContentContainer = document.querySelector('#page-container')
@@ -68,6 +74,11 @@ const Toolbar = ({ pageInViewport }) => {
 
   const handleExportToPDF = () => {
     dispatch(filesActions.startSavingPDFVersion())
+    const editingElement = document.querySelector('.editing')
+    if (editingElement) {
+      editingElement.classList.remove('editing')
+    }
+    dispatch(contentEditorActions.unsetWorkingElement())
 
     const domParser = new DOMParser()
 

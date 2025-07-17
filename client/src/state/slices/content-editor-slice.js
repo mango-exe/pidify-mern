@@ -4,6 +4,7 @@ export const contentEditorActionTypes = {
   ADD_IMAGE_ELEMENT: 'ADD_IMAGE_ELEMENT',
   ADD_TEXT_ELEMENT: 'ADD_TEXT_ELEMENT',
   EDIT_TEXT_ELEMENT: 'EDIT_TEXT_ELEMENT',
+  EDIT_IMAGE_ELEMENT: 'EDIT_IMAGE_ELEMENT',
   UNSET_ELEMENT: 'UNSET_ELEMENT',
   CANCEL_EDITING: 'CANCEL_EDITING'
 }
@@ -40,11 +41,21 @@ const processEditTextElement = (workingElementId, state) => {
     if (editingElement.textContent) {
 
       const lastEditingElement = document.getElementById(state.workingElementId)
+      const lastEditingElementActionType = state.actionType
 
-      if (lastEditingElement && lastEditingElement.id !== editingElement.id) {
-        lastEditingElement.contentEditable = false
-        lastEditingElement.classList.remove('editing')
-        lastEditingElement.classList.add('text-container')
+      if (lastEditingElementActionType === contentEditorActionTypes.EDIT_TEXT_ELEMENT) {
+        if (lastEditingElement && lastEditingElement.id !== editingElement.id) {
+          lastEditingElement.contentEditable = false
+          lastEditingElement.classList.remove('editing')
+          lastEditingElement.classList.add('text-container')
+        }
+      }
+
+      if (lastEditingElementActionType === contentEditorActionTypes.EDIT_IMAGE_ELEMENT) {
+        if (lastEditingElement && lastEditingElement.id !== editingElement.id) {
+          lastEditingElement.classList.remove('editing')
+          lastEditingElement.classList.add('image-container')
+        }
       }
 
       editingElement.contentEditable = true
@@ -52,6 +63,37 @@ const processEditTextElement = (workingElementId, state) => {
       editingElement.classList.add('editing')
       editingElement.classList.remove('text-container')
     }
+  }
+}
+
+const processEditImageElement = (workingElementId, state) => {
+  const editingElement = document.getElementById(workingElementId)
+  if (editingElement) {
+    if (!editingElement.hasAttribute('element-supports')) return
+    if (editingElement.getAttribute('element-supports') !== 'editing') return
+
+    const lastEditingElement = document.getElementById(state.workingElementId)
+    const lastEditingElementActionType = state.actionType
+
+    if (lastEditingElementActionType === contentEditorActionTypes.EDIT_TEXT_ELEMENT) {
+      if (lastEditingElement && lastEditingElement.id !== editingElement.id) {
+        lastEditingElement.contentEditable = false
+        lastEditingElement.classList.remove('editing')
+        lastEditingElement.classList.add('text-container')
+      }
+    }
+
+    if (lastEditingElementActionType === contentEditorActionTypes.EDIT_IMAGE_ELEMENT) {
+      if (lastEditingElement && lastEditingElement.id !== editingElement.id) {
+        lastEditingElement.classList.remove('editing')
+        lastEditingElement.classList.add('image-container')
+      }
+    }
+
+    editingElement.focus()
+    editingElement.classList.add('editing')
+    editingElement.classList.remove('image-container')
+
   }
 }
 
@@ -67,6 +109,12 @@ const processCancelEditingElement = (state) => {
       editingElement.classList.add('text-container')
     }
   }
+
+  if (editingElement && state.actionType === contentEditorActionTypes.EDIT_IMAGE_ELEMENT) {
+    editingElement.blur()
+    editingElement.classList.remove('editing')
+    editingElement.classList.add('image-container')
+  }
 }
 
 const processWorkingElement = (workingElementId, actionType, state) => {
@@ -79,6 +127,9 @@ const processWorkingElement = (workingElementId, actionType, state) => {
       break
     case contentEditorActionTypes.EDIT_TEXT_ELEMENT:
       processEditTextElement(workingElementId, state)
+      break
+    case contentEditorActionTypes.EDIT_IMAGE_ELEMENT:
+      processEditImageElement(workingElementId, state)
       break
     case contentEditorActionTypes.CANCEL_EDITING:
       processCancelEditingElement(state)
@@ -96,6 +147,7 @@ const contentEditorSlice = createSlice({
       const { workingElementId, actionType  } = action.payload
       processWorkingElement(workingElementId, actionType, state)
       state.workingElementId = action.payload.workingElementId
+      console.warn(action.payload.actionType)
       state.actionType = action.payload.actionType
     },
     unsetWorkingElement: (state, action) => {

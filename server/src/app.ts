@@ -9,18 +9,8 @@ import fileUpload from 'express-fileupload'
 
 /*
   TODO:
-    1. diff logic for file edits (including versioning and access to older versions)
-    2. export for file
-    3. generat thumbnails for pdf so that they appear in sidebar
-    4. add page and remove page
-
-   BUGS:
-    1. fix logic for failed job
-    2. websocket bug
-    3. fix z-index for adding text
-    4. add set behind or set in front for images
-    5. fix scrollbar for files height
-    6. fix image editing
+    2. websocket bug ??
+    7. removing  pdf pages
 */
 
 

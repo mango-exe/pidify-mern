@@ -20,7 +20,7 @@
 .content-editor-container .content-editor-content #page-container {
   position: relative;
   overflow-x: hidden;
-  height: 85vh;
+  height: 80vh;
   padding: 1em;
   scrollbar-width: thin;
   scrollbar-color: #8b5cf6 transparent;
