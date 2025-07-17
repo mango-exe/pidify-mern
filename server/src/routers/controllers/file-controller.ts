@@ -20,6 +20,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { saveFile } from '../../lib/file-lib'
 import { getFormattedTimestamp } from '../../lib/helpers-lib'
 
+
 const getPDFFileMetas = async (req: Request, res: Response<IResponse>, next: NextFunction) => {
   try {
     const user = await models.User.findOne({ _id: res.locals.user._id }).populate<{ permissions: IPermission[] }>('permissions')
@@ -267,5 +268,5 @@ export {
   getPDFFileMetas,
   getFileMetaContent,
   getPDFFileMetaById,
-  getPDFFileMetasVersions
+  getPDFFileMetasVersions,
 }

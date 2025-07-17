@@ -114,5 +114,5 @@ export {
   buildDockerFile,
   runDockerPDFtoHTMLService,
   runDockerImageExtractorService,
-  runDockerImageConverterService
+  runDockerImageConverterService,
 }

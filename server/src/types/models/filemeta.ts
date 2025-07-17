@@ -15,7 +15,6 @@ interface IFileMeta {
   size: number;
   name: string;
   description: string;
-  exports: [mongoose.Types.ObjectId];
   jobStatus: JobStatus
 }
 

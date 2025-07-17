@@ -9,7 +9,6 @@ const FileMetaSchema = new Schema<IFileMeta>({
   size: Number,
   name: { type: String, required: true, unique: true },
   description: String,
-  exports: { type: [Schema.Types.ObjectId], ref: 'Export' },
   jobStatus: { type: String, enum: Object.values(JobStatus), default: JobStatus.PENDING  }
 })
 
