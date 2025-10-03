@@ -88,6 +88,6 @@ The application should now be running locally, typically accessible at `http://l
 ![PDF Editor adding new image](screenshots/pdf-editor-new-image.png)
 
 #### Editing existing text
-![PDF Editor editing existing text](screenshots/pdf-editor-editing-existing-text.png)
+![PDF Editor editing existing text](screenshots/pdf-editor-edit-existing-text.png)
 
 ---
